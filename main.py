@@ -161,7 +161,7 @@ def check_and_notify():
         return
 
     seen_ids = load_seen_ids()
-    new_posts = [p for p in posts if p["id"] not in seen_ids]
+    new_posts = [p for p in posts if p["id"] not in seen_ids and "어바니엘" not in p["title"]]
 
     if not new_posts:
         print("  새 글 없음")
@@ -209,7 +209,7 @@ def check_and_notify():
 
         history["records"].insert(0, record)
 
-    history["records"] = history["records"][:200]
+    history["records"] = history["records"][:500]
 
     save_seen_ids(seen_ids)
     save_failed_posts(failed_posts)

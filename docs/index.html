@@ -246,6 +246,16 @@
             padding: 2px 10px;
             border-radius: 9999px;
         }
+        .rec-badge {
+            font-size: 11px;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.15);
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-weight: 700;
+        }
+        .rec-star { color: #fbbf24; font-size: 12px; }
+        .type-row.recommended { background: rgba(251, 191, 36, 0.05); border-radius: 6px; margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
         .complex-toggle {
             color: #64748b;
             font-size: 14px;
@@ -262,7 +272,7 @@
 
         .type-row {
             display: grid;
-            grid-template-columns: 70px 1fr 90px 50px;
+            grid-template-columns: 70px 1fr 80px;
             gap: 12px;
             align-items: center;
             padding: 12px 0;
@@ -301,14 +311,6 @@
         .trend-up { color: #f87171; }
         .trend-down { color: #34d399; }
         .trend-stable { color: #64748b; }
-        .difficulty { text-align: center; }
-        .diff-dot {
-            display: inline-block;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            margin: 0 1px;
-        }
-
         .type-detail {
             grid-column: 1 / -1;
             padding: 4px 0 0;
@@ -957,13 +959,12 @@
             const tbody = document.getElementById('tableBody');
             table.style.display = 'table';
 
-            records.forEach(r => {
+            records.filter(r => !r.title.includes('어바니엘')).forEach(r => {
                 const tr = document.createElement('tr');
                 const imgIcon = r.has_image ? ' <span class="img-icon">[IMG]</span>' : '';
-                if (r.detail_url) {
-                    tr.dataset.href = r.detail_url;
-                    tr.addEventListener('click', () => window.open(r.detail_url, '_blank'));
-                }
+                const href = r.detail_url || 'https://www.elyes.co.kr/post/recruit';
+                tr.dataset.href = href;
+                tr.addEventListener('click', () => window.open(href, '_blank'));
                 tr.innerHTML = `
                     <td>${badgeHTML(r.status)}</td>
                     <td class="title-cell" title="${r.title}">${r.title}${imgIcon}</td>
@@ -1001,16 +1002,6 @@
             if (trend === 'up') return '<span class="trend-badge trend-up">&#9650; 상승</span>';
             if (trend === 'down') return '<span class="trend-badge trend-down">&#9660; 하락</span>';
             return '<span class="trend-badge trend-stable">&#8212; 안정</span>';
-        }
-
-        function difficultyDots(level) {
-            const colors = ['#22c55e','#22c55e','#84cc16','#eab308','#eab308','#f97316','#f97316','#ef4444','#ef4444','#dc2626'];
-            let html = '';
-            for (let i = 0; i < 5; i++) {
-                const active = i < Math.ceil(level / 2);
-                html += `<span class="diff-dot" style="background:${active ? colors[level-1] || '#64748b' : '#334155'}"></span>`;
-            }
-            return html;
         }
 
         function confBadge(level) {
@@ -1220,21 +1211,22 @@
             );
 
             for (const [cname, cdata] of sortedComplexes) {
-                const typeEntries = Object.entries(cdata.types).sort((a, b) => b[1].weighted_rate - a[1].weighted_rate);
-                const topRate = typeEntries[0]?.[1].weighted_rate || 0;
+                const typeEntries = Object.entries(cdata.types).sort((a, b) => a[1].weighted_rate - b[1].weighted_rate);
+                const rec = cdata.recommended_type;
 
                 html += `
-                    <div class="complex-card">
+                    <div class="complex-card open">
                         <div class="complex-header" onclick="this.parentElement.classList.toggle('open')">
                             <span class="complex-name">${cname}</span>
                             <div class="complex-meta-right">
                                 <span class="complex-rounds">${cdata.total_rounds}회 모집</span>
+                                ${rec ? `<span class="rec-badge">추천: ${rec}</span>` : ''}
                                 <span class="complex-toggle">&#9660;</span>
                             </div>
                         </div>
                         <div class="complex-body"><div class="complex-body-inner">
-                            <div style="display:grid; grid-template-columns:70px 1fr 90px 50px; gap:12px; padding:4px 0 8px; font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
-                                <span>타입</span><span>경쟁률 (가중)</span><span style="text-align:center;">추세</span><span style="text-align:center;">난이도</span>
+                            <div style="display:grid; grid-template-columns:70px 1fr 80px; gap:12px; padding:4px 0 8px; font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                                <span>타입</span><span>경쟁률 (가중)</span><span style="text-align:center;">추세</span>
                             </div>
                 `;
 
@@ -1242,32 +1234,28 @@
                     const barWidth = Math.min(100, (tdata.weighted_rate / globalMax) * 100);
                     const barClass = rateColor(tdata.weighted_rate);
                     const labelInside = barWidth > 25;
+                    const isRec = tname === rec;
 
                     html += `
-                        <div class="type-row">
-                            <div class="type-name">${tname}</div>
+                        <div class="type-row${isRec ? ' recommended' : ''}">
+                            <div class="type-name">${tname}${isRec ? ' <span class="rec-star">&#9733;</span>' : ''}</div>
                             <div class="rate-bar-wrap">
                                 <div class="rate-bar ${barClass}" style="width:${barWidth}%"></div>
                                 <span class="rate-bar-label${labelInside ? '' : ' outside'}">${tdata.weighted_rate}:1</span>
                             </div>
                             <div>${trendIcon(tdata.trend)}</div>
-                            <div class="difficulty">${difficultyDots(tdata.difficulty)}</div>
                         </div>
                         <div class="type-detail" style="grid-column:1/-1; margin-bottom:4px;">
                             <span>평균 ${tdata.avg_rate}:1</span>
                             <span>최근 ${tdata.recent_avg}:1</span>
-                            <span>총 ${tdata.total_applicants}명 / ${tdata.total_units}세대</span>
-                            <span>${tdata.appearances}회 출현</span>
+                            <span>${tdata.appearances}회 모집</span>
                         </div>
                     `;
 
-                    // 이력 (최근 5건)
                     if (tdata.history && tdata.history.length > 0) {
                         html += '<div style="grid-column:1/-1; display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">';
-                        const recent = tdata.history.slice(-5);
-                        for (const h of recent) {
-                            const coText = h.co_types.length > 0 ? ` + ${h.co_types.join(',')}` : ' (단독)';
-                            html += `<div class="history-item"><strong>${h.rate}:1</strong> ${h.date} (${h.units}세대${coText})</div>`;
+                        for (const h of tdata.history.slice(-5)) {
+                            html += `<div class="history-item"><strong>${h.rate}:1</strong> ${h.date} (${h.units}세대)</div>`;
                         }
                         html += '</div>';
                     }
