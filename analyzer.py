@@ -974,16 +974,20 @@ def run_analysis():
     now_kst = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
 
     if not new_matches and mode == "incremental" and prev:
-        # 새 현황 데이터 없음 → 이전 분석 유지, 메타만 업데이트
+        # 새 현황 데이터 없음 → 이전 분석 유지
         print("  새 현황 데이터 없음 → 이전 분석 유지")
-        prev["meta"]["last_checked"] = now_kst
-        prev["meta"]["known_post_ids"] = sorted(all_known_ids)
 
-        os.makedirs(os.path.dirname(ANALYSIS_FILE), exist_ok=True)
-        with open(ANALYSIS_FILE, "w", encoding="utf-8") as f:
-            json.dump(prev, f, ensure_ascii=False, indent=2)
+        # known_post_ids가 변경된 경우에만 파일 저장 (불필요한 커밋 방지)
+        if all_known_ids != known_ids:
+            prev["meta"]["known_post_ids"] = sorted(all_known_ids)
+            os.makedirs(os.path.dirname(ANALYSIS_FILE), exist_ok=True)
+            with open(ANALYSIS_FILE, "w", encoding="utf-8") as f:
+                json.dump(prev, f, ensure_ascii=False, indent=2)
+            print(f"  게시글 ID 업데이트 ({len(all_known_ids)}건)")
+        else:
+            print(f"  변경사항 없음 — 저장 스킵")
 
-        print(f"\n분석 유지 v{prev_version} (마지막 확인: {now_kst})")
+        print(f"\n분석 유지 v{prev_version}")
         return prev
 
     if new_matches or mode == "full":

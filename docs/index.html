@@ -696,33 +696,49 @@
             font-size: 12px;
             color: #475569;
         }
+        .footer a { color: #60a5fa; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
 
-        /* ====== 반응형 ====== */
+        /* ====== 터치 & 인터랙션 ====== */
+        button, a, select, input, .complex-header, tr[data-href] {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .tab-btn:active { transform: scale(0.97); }
+        .complex-header:active { background: #1e3a5f; }
+        tr[data-href]:active td { background: #1e3a5f; }
+        .api-btn:active { transform: scale(0.97); }
+
+        /* ====== 반응형: 태블릿 ====== */
         @media (max-width: 768px) {
             .stats { grid-template-columns: repeat(2, 1fr); }
             .header h1 { font-size: 24px; }
             .header { padding: 24px 0 20px; }
             .stat-card .value { font-size: 24px; }
-            .title-cell { max-width: 300px; }
+            .title-cell { max-width: 260px; }
             .type-row { grid-template-columns: 60px 1fr 70px; gap: 8px; }
             .mc-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .rec-main { font-size: 16px; }
+            .version-banner { flex-direction: column; align-items: flex-start; }
         }
+
+        /* ====== 반응형: 모바일 ====== */
         @media (max-width: 480px) {
-            .container { padding: 16px 12px; }
+            .container { padding: 16px 10px; }
             .header { padding: 16px 0 12px; margin-bottom: 16px; }
             .header h1 { font-size: 20px; }
             .header p { font-size: 12px; }
             .tabs { margin-bottom: 20px; }
-            .tab-btn { font-size: 13px; padding: 8px 12px; }
+            .tab-btn { font-size: 12px; padding: 10px 4px; min-height: 44px; white-space: nowrap; }
             .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
-            .stat-card { padding: 14px; }
+            .stat-card { padding: 14px 10px; }
             .stat-card .value { font-size: 20px; }
+            .stat-card .value.small { font-size: 13px; }
             .stat-card .label { font-size: 11px; }
             .section-title { font-size: 14px; margin-bottom: 10px; }
             th { padding: 8px 10px; font-size: 10px; }
             td { padding: 8px 10px; font-size: 12px; }
-            .title-cell { max-width: 160px; }
+            .title-cell { max-width: 140px; }
             .badge { font-size: 10px; padding: 2px 8px; }
             .table-wrap { position: relative; }
             .table-wrap::after {
@@ -734,20 +750,49 @@
                 pointer-events: none;
                 border-radius: 0 12px 12px 0;
             }
-            .complex-header { padding: 12px 14px; }
+            .token-status { padding: 10px 14px; font-size: 12px; }
+            .complex-header { padding: 12px 14px; min-height: 48px; }
             .complex-name { font-size: 14px; }
-            .complex-body-inner { padding: 0 14px 12px; }
+            .complex-meta-right { gap: 6px; }
+            .complex-rounds { font-size: 10px; padding: 2px 8px; }
+            .rec-badge { font-size: 10px; padding: 2px 8px; }
+            .complex-body-inner { padding: 0 12px 12px; }
             .type-row { grid-template-columns: 50px 1fr 60px; gap: 6px; padding: 8px 0; }
-            .calc-type-row { grid-template-columns: 50px 90px 1fr; gap: 6px; font-size: 12px; }
-            .calc-input { width: 55px; font-size: 12px; padding: 4px 6px; }
             .type-name { font-size: 12px; }
             .rate-bar-wrap { height: 22px; }
+            .rate-bar-label { font-size: 10px; }
+            .type-detail { font-size: 11px; gap: 4px 10px; }
+            .history-item { font-size: 10px; padding: 4px 8px; }
             .analysis-meta { padding: 12px 14px; font-size: 12px; }
+            .insight-card { padding: 12px 14px; font-size: 12px; }
+            .calc-section { padding: 14px; }
+            .calc-select { font-size: 14px; padding: 12px 14px; min-height: 44px; }
+            .calc-type-row { grid-template-columns: 50px 90px 1fr; gap: 6px; font-size: 12px; }
+            .calc-input { width: 60px; font-size: 14px; padding: 8px 6px; min-height: 40px; }
             .mc-grid { grid-template-columns: repeat(2, 1fr); }
-            .rec-stats { gap: 12px; }
+            .mc-card { padding: 12px; }
+            .mc-value { font-size: 20px; }
+            .mc-label { font-size: 10px; }
+            .rec-card { padding: 16px; }
+            .rec-stats { gap: 10px; }
             .rec-stat-value { font-size: 18px; }
+            .rec-stat-label { font-size: 10px; }
             .rec-main { font-size: 15px; }
+            .sim-params { padding: 12px 14px; font-size: 12px; gap: 6px 14px; }
             .prob-table table { min-width: 480px; }
+            .cumul-label { width: 32px; font-size: 11px; }
+            .cumul-value { width: 44px; font-size: 11px; }
+            .cumul-bar-wrap { height: 18px; }
+            .version-banner { flex-direction: column; align-items: flex-start; gap: 4px; padding: 12px 14px; }
+            .version-tag { font-size: 12px; padding: 3px 10px; }
+            .version-info { font-size: 11px; }
+            .api-status-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .api-status-card { padding: 14px; }
+            .api-section { padding: 14px; }
+            .api-actions { gap: 8px; }
+            .api-btn { padding: 10px 14px; font-size: 12px; min-height: 44px; }
+            .api-step { font-size: 12px; }
+            .footer { padding: 24px 0 12px; font-size: 11px; }
         }
     </style>
 </head>
@@ -918,7 +963,7 @@
         </div>
 
         <div class="footer">
-            데이터 출처: <a href="https://www.elyes.co.kr" target="_blank" style="color:#60a5fa;">elyes.co.kr</a>
+            데이터 출처: <a href="https://www.elyes.co.kr" target="_blank">elyes.co.kr</a>
         </div>
     </div>
 

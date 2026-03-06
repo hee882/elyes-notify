@@ -143,13 +143,20 @@ def check_and_notify():
         write_github_output("new_refresh_token", token_data["new_refresh_token"])
 
     history = load_history()
+    prev_token_status = history["stats"].get("token_status")
     history["stats"]["last_run"] = now_kst
     history["stats"]["token_status"] = "active"
     history["stats"]["token_refreshed_at"] = now_kst
     history["stats"]["refresh_token_renewed"] = refresh_renewed
 
+    # 토큰 상태 변경 감지 (error → active 등)
+    has_changes = prev_token_status != "active" or refresh_renewed
+
     # 2) 이전 실패 글 재전송
+    record_count = len(history["records"])
     retry_failed_posts(access_token, history, now_kst)
+    if len(history["records"]) > record_count:
+        has_changes = True
 
     # 3) 모집공고 크롤링
     print("\n모집공고 확인 중...")
@@ -157,7 +164,8 @@ def check_and_notify():
         posts = get_latest_posts(count=10)
     except Exception as e:
         print(f"  크롤링 실패: {e}")
-        save_json_file(HISTORY_FILE, history)
+        if has_changes:
+            save_json_file(HISTORY_FILE, history)
         return
 
     seen_ids = load_seen_ids()
@@ -165,7 +173,8 @@ def check_and_notify():
 
     if not new_posts:
         print("  새 글 없음")
-        save_json_file(HISTORY_FILE, history)
+        if has_changes:
+            save_json_file(HISTORY_FILE, history)
         return
 
     new_posts.reverse()
