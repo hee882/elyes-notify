@@ -92,6 +92,7 @@ def retry_failed_posts(access_token, history, now_kst):
             "notified_at": now_kst,
             "status": "pending",
             "has_image": post.get("has_image", False),
+            "detail_url": post.get("detail_url"),
             "retry": True,
         }
         try:
@@ -125,17 +126,27 @@ def check_and_notify():
         print(f"  토큰 갱신 실패: {e}")
         print("  → GitHub Actions 로그를 확인하고, 토큰 재발급이 필요할 수 있습니다.")
         write_github_output("token_error", "true")
+        history = load_history()
+        history["stats"]["last_run"] = now_kst
+        history["stats"]["token_status"] = "error"
+        history["stats"]["token_error"] = str(e)
+        history["stats"]["token_refreshed_at"] = now_kst
+        save_json_file(HISTORY_FILE, history)
         return
 
     access_token = token_data["access_token"]
     print("  access_token 갱신 완료")
 
-    if token_data["new_refresh_token"]:
+    refresh_renewed = bool(token_data["new_refresh_token"])
+    if refresh_renewed:
         print("  refresh_token도 갱신됨 → GitHub Secret 업데이트 예정")
         write_github_output("new_refresh_token", token_data["new_refresh_token"])
 
     history = load_history()
     history["stats"]["last_run"] = now_kst
+    history["stats"]["token_status"] = "active"
+    history["stats"]["token_refreshed_at"] = now_kst
+    history["stats"]["refresh_token_renewed"] = refresh_renewed
 
     # 2) 이전 실패 글 재전송
     retry_failed_posts(access_token, history, now_kst)
@@ -171,6 +182,7 @@ def check_and_notify():
             "notified_at": now_kst,
             "status": "pending",
             "has_image": bool(post.get("image_url")),
+            "detail_url": post.get("detail_url"),
         }
         try:
             send_kakao_message(post, access_token)

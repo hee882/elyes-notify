@@ -48,6 +48,8 @@
             font-size: 32px;
             font-weight: 700;
             color: #60a5fa;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
         .stat-card .label {
             font-size: 13px;
@@ -75,9 +77,10 @@
             background: #1e293b;
             border-radius: 12px;
             border: 1px solid #334155;
-            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th {
             background: #0f172a;
             padding: 12px 16px;
@@ -114,6 +117,34 @@
         .badge-pending { background: #78350f; color: #fcd34d; }
         .badge-retried { background: #1e3a5f; color: #93c5fd; }
 
+        /* 클릭 가능한 행 */
+        tr[data-href] { cursor: pointer; }
+        tr[data-href]:hover td { background: #1e3a5f; }
+
+        /* 토큰 상태 */
+        .token-status {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+        .token-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .token-dot.active { background: #22c55e; box-shadow: 0 0 6px #22c55e80; }
+        .token-dot.error { background: #ef4444; box-shadow: 0 0 6px #ef444480; }
+        .token-dot.unknown { background: #64748b; }
+        .token-info { color: #94a3b8; }
+        .token-info strong { color: #e2e8f0; }
+
         /* 이미지 아이콘 */
         .img-icon { color: #60a5fa; font-size: 12px; }
 
@@ -140,10 +171,42 @@
             color: #64748b;
         }
 
-        /* 반응형 */
-        @media (max-width: 640px) {
-            .stats { grid-template-columns: 1fr; }
-            .title-cell { max-width: 200px; }
+        /* 반응형 - 태블릿 */
+        @media (max-width: 768px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .header h1 { font-size: 24px; }
+            .header { padding: 24px 0; }
+            .stat-card .value { font-size: 26px; }
+            .title-cell { max-width: 300px; }
+        }
+
+        /* 반응형 - 모바일 */
+        @media (max-width: 480px) {
+            .container { padding: 16px 12px; }
+            .header { padding: 16px 0; margin-bottom: 16px; }
+            .header h1 { font-size: 20px; }
+            .header p { font-size: 12px; }
+            .stats { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+            .stat-card { padding: 14px; }
+            .stat-card .value { font-size: 22px; }
+            .stat-card .label { font-size: 12px; }
+            .section-title { font-size: 16px; margin-bottom: 12px; }
+            th { padding: 10px; font-size: 11px; }
+            td { padding: 10px; font-size: 13px; }
+            .title-cell { max-width: 160px; }
+            .badge { font-size: 11px; padding: 2px 8px; }
+            .table-wrap { position: relative; }
+            .table-wrap::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 24px;
+                height: 100%;
+                background: linear-gradient(to right, transparent, #1e293b);
+                pointer-events: none;
+                border-radius: 0 12px 12px 0;
+            }
         }
     </style>
 </head>
@@ -171,6 +234,11 @@
                 <div class="value" id="lastRun">-</div>
                 <div class="label">마지막 실행</div>
             </div>
+        </div>
+
+        <div id="tokenStatus" class="token-status" style="display:none;">
+            <div id="tokenDot" class="token-dot unknown"></div>
+            <div class="token-info" id="tokenInfo">토큰 상태 확인 중...</div>
         </div>
 
         <div class="section-title">알림 이력</div>
@@ -221,6 +289,26 @@
             }
         }
 
+        function renderTokenStatus(stats) {
+            const el = document.getElementById('tokenStatus');
+            const dot = document.getElementById('tokenDot');
+            const info = document.getElementById('tokenInfo');
+
+            const status = stats.token_status;
+            if (!status) return; // 이전 데이터는 토큰 정보 없음
+
+            el.style.display = 'flex';
+            dot.className = 'token-dot ' + (status === 'active' ? 'active' : 'error');
+
+            if (status === 'active') {
+                const renewed = stats.refresh_token_renewed ? ' (refresh_token 갱신됨)' : '';
+                info.innerHTML = `<strong>카카오 API</strong> 정상${renewed} · 마지막 갱신: ${stats.token_refreshed_at || '-'}`;
+            } else {
+                const errMsg = stats.token_error ? ` · ${stats.token_error}` : '';
+                info.innerHTML = `<strong>카카오 API</strong> 토큰 오류 — 재발급 필요${errMsg}`;
+            }
+        }
+
         function render(data) {
             const { records, stats } = data;
 
@@ -228,6 +316,8 @@
             document.getElementById('totalFailed').textContent = stats.total_failed || 0;
             document.getElementById('totalRetried').textContent = stats.total_retried || 0;
             document.getElementById('lastRun').textContent = stats.last_run || '-';
+
+            renderTokenStatus(stats);
 
             document.getElementById('loading').style.display = 'none';
 
@@ -243,6 +333,10 @@
             records.forEach(r => {
                 const tr = document.createElement('tr');
                 const imgIcon = r.has_image ? ' <span class="img-icon">[IMG]</span>' : '';
+                if (r.detail_url) {
+                    tr.dataset.href = r.detail_url;
+                    tr.addEventListener('click', () => window.open(r.detail_url, '_blank'));
+                }
                 tr.innerHTML = `
                     <td>${badgeHTML(r.status)}</td>
                     <td class="title-cell" title="${r.title}">${r.title}${imgIcon}</td>
