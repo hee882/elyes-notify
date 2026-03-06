@@ -1,8 +1,8 @@
 {
   "meta": {
-    "version": 2,
-    "analyzed_at": "2026-03-06 17:17",
-    "last_checked": "2026-03-06 17:17",
+    "version": 3,
+    "analyzed_at": "2026-03-06 17:25",
+    "last_checked": "2026-03-06 17:25",
     "mode": "full",
     "total_posts": 212,
     "new_posts": 212,
@@ -246,6 +246,12 @@
         "date": "2026-03-06 17:17",
         "new_posts": 212,
         "new_matches": 0
+      },
+      {
+        "version": 3,
+        "date": "2026-03-06 17:25",
+        "new_posts": 212,
+        "new_matches": 0
       }
     ]
   },
@@ -293,6 +299,411 @@
       "detail": "모집 세대수가 많아 당첨 기회가 상대적으로 높습니다."
     }
   ],
+  "optimization": {
+    "params": {
+      "reserve_multiplier": 3,
+      "reserve_conversion": 0.3
+    },
+    "candidates": [
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "84B",
+        "predicted_rate": 26.0,
+        "rate_range": [
+          13.0,
+          52.0
+        ],
+        "rate_std": 13.0,
+        "confidence": "low",
+        "n_data": 1,
+        "trend": "stable",
+        "win_prob": 7.31,
+        "win_prob_direct": 3.85,
+        "win_prob_reserve": 3.46,
+        "win_prob_range": [
+          3.65,
+          14.62
+        ]
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "84A",
+        "predicted_rate": 38.7,
+        "rate_range": [
+          19.4,
+          77.4
+        ],
+        "rate_std": 19.4,
+        "confidence": "low",
+        "n_data": 1,
+        "trend": "stable",
+        "win_prob": 4.91,
+        "win_prob_direct": 2.58,
+        "win_prob_reserve": 2.33,
+        "win_prob_range": [
+          2.45,
+          9.79
+        ]
+      },
+      {
+        "complex": "동탄2 롯데캐슬",
+        "type": "74B",
+        "predicted_rate": 41.6,
+        "rate_range": [
+          13.4,
+          69.8
+        ],
+        "rate_std": 11.9,
+        "confidence": "high",
+        "n_data": 7,
+        "trend": "stable",
+        "win_prob": 4.57,
+        "win_prob_direct": 2.4,
+        "win_prob_reserve": 2.16,
+        "win_prob_range": [
+          2.72,
+          14.18
+        ]
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "59B",
+        "predicted_rate": 48.2,
+        "rate_range": [
+          1,
+          118.0
+        ],
+        "rate_std": 20.3,
+        "confidence": "low",
+        "n_data": 2,
+        "trend": "stable",
+        "win_prob": 3.94,
+        "win_prob_direct": 2.07,
+        "win_prob_reserve": 1.87,
+        "win_prob_range": [
+          1.61,
+          100.0
+        ]
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "84C",
+        "predicted_rate": 53.7,
+        "rate_range": [
+          1,
+          145.8
+        ],
+        "rate_std": 26.9,
+        "confidence": "low",
+        "n_data": 2,
+        "trend": "stable",
+        "win_prob": 3.54,
+        "win_prob_direct": 1.86,
+        "win_prob_reserve": 1.68,
+        "win_prob_range": [
+          1.3,
+          100.0
+        ]
+      },
+      {
+        "complex": "동탄2 롯데캐슬",
+        "type": "84",
+        "predicted_rate": 59.4,
+        "rate_range": [
+          41.9,
+          76.8
+        ],
+        "rate_std": 5.9,
+        "confidence": "medium",
+        "n_data": 3,
+        "trend": "stable",
+        "win_prob": 3.2,
+        "win_prob_direct": 1.68,
+        "win_prob_reserve": 1.52,
+        "win_prob_range": [
+          2.47,
+          4.53
+        ]
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "59A",
+        "predicted_rate": 63.1,
+        "rate_range": [
+          7.1,
+          119.2
+        ],
+        "rate_std": 19.1,
+        "confidence": "medium",
+        "n_data": 3,
+        "trend": "stable",
+        "win_prob": 3.01,
+        "win_prob_direct": 1.58,
+        "win_prob_reserve": 1.43,
+        "win_prob_range": [
+          1.59,
+          26.76
+        ]
+      },
+      {
+        "complex": "동탄2 롯데캐슬",
+        "type": "74A",
+        "predicted_rate": 94.4,
+        "rate_range": [
+          22.2,
+          166.6
+        ],
+        "rate_std": 32.4,
+        "confidence": "high",
+        "n_data": 11,
+        "trend": "stable",
+        "win_prob": 2.01,
+        "win_prob_direct": 1.06,
+        "win_prob_reserve": 0.95,
+        "win_prob_range": [
+          1.14,
+          8.56
+        ]
+      },
+      {
+        "complex": "독산역 롯데캐슬",
+        "type": "59B",
+        "predicted_rate": 101.0,
+        "rate_range": [
+          47.9,
+          154.1
+        ],
+        "rate_std": 15.5,
+        "confidence": "low",
+        "n_data": 2,
+        "trend": "stable",
+        "win_prob": 1.88,
+        "win_prob_direct": 0.99,
+        "win_prob_reserve": 0.89,
+        "win_prob_range": [
+          1.23,
+          3.97
+        ]
+      },
+      {
+        "complex": "독산역 롯데캐슬",
+        "type": "59C",
+        "predicted_rate": 153.0,
+        "rate_range": [
+          76.5,
+          306.0
+        ],
+        "rate_std": 76.5,
+        "confidence": "low",
+        "n_data": 1,
+        "trend": "stable",
+        "win_prob": 1.24,
+        "win_prob_direct": 0.65,
+        "win_prob_reserve": 0.59,
+        "win_prob_range": [
+          0.62,
+          2.48
+        ]
+      },
+      {
+        "complex": "독산역 롯데캐슬",
+        "type": "59A",
+        "predicted_rate": 170.5,
+        "rate_range": [
+          1,
+          416.3
+        ],
+        "rate_std": 71.7,
+        "confidence": "low",
+        "n_data": 2,
+        "trend": "stable",
+        "win_prob": 1.11,
+        "win_prob_direct": 0.59,
+        "win_prob_reserve": 0.53,
+        "win_prob_range": [
+          0.46,
+          100.0
+        ]
+      }
+    ],
+    "repetition": [
+      {
+        "rounds": 1,
+        "prob": 7.31
+      },
+      {
+        "rounds": 2,
+        "prob": 14.09
+      },
+      {
+        "rounds": 3,
+        "prob": 20.37
+      },
+      {
+        "rounds": 4,
+        "prob": 26.19
+      },
+      {
+        "rounds": 5,
+        "prob": 31.58
+      },
+      {
+        "rounds": 6,
+        "prob": 36.58
+      },
+      {
+        "rounds": 7,
+        "prob": 41.22
+      },
+      {
+        "rounds": 8,
+        "prob": 45.52
+      },
+      {
+        "rounds": 9,
+        "prob": 49.5
+      },
+      {
+        "rounds": 10,
+        "prob": 53.19
+      },
+      {
+        "rounds": 11,
+        "prob": 56.61
+      },
+      {
+        "rounds": 12,
+        "prob": 59.78
+      },
+      {
+        "rounds": 13,
+        "prob": 62.72
+      },
+      {
+        "rounds": 14,
+        "prob": 65.45
+      },
+      {
+        "rounds": 15,
+        "prob": 67.97
+      },
+      {
+        "rounds": 16,
+        "prob": 70.32
+      },
+      {
+        "rounds": 17,
+        "prob": 72.49
+      },
+      {
+        "rounds": 18,
+        "prob": 74.5
+      },
+      {
+        "rounds": 19,
+        "prob": 76.36
+      },
+      {
+        "rounds": 20,
+        "prob": 78.09
+      }
+    ],
+    "cumulative": [
+      {
+        "round": 1,
+        "label": "신동탄 롯데캐슬 84B",
+        "this_prob": 7.31,
+        "cumulative_prob": 7.31
+      },
+      {
+        "round": 2,
+        "label": "신동탄 롯데캐슬 84A",
+        "this_prob": 4.91,
+        "cumulative_prob": 11.86
+      },
+      {
+        "round": 3,
+        "label": "동탄2 롯데캐슬 74B",
+        "this_prob": 4.57,
+        "cumulative_prob": 15.89
+      },
+      {
+        "round": 4,
+        "label": "신동탄 롯데캐슬 59B",
+        "this_prob": 3.94,
+        "cumulative_prob": 19.2
+      },
+      {
+        "round": 5,
+        "label": "신동탄 롯데캐슬 84C",
+        "this_prob": 3.54,
+        "cumulative_prob": 22.06
+      },
+      {
+        "round": 6,
+        "label": "동탄2 롯데캐슬 84",
+        "this_prob": 3.2,
+        "cumulative_prob": 24.56
+      },
+      {
+        "round": 7,
+        "label": "신동탄 롯데캐슬 59A",
+        "this_prob": 3.01,
+        "cumulative_prob": 26.83
+      },
+      {
+        "round": 8,
+        "label": "동탄2 롯데캐슬 74A",
+        "this_prob": 2.01,
+        "cumulative_prob": 28.3
+      },
+      {
+        "round": 9,
+        "label": "독산역 롯데캐슬 59B",
+        "this_prob": 1.88,
+        "cumulative_prob": 29.65
+      },
+      {
+        "round": 10,
+        "label": "독산역 롯데캐슬 59C",
+        "this_prob": 1.24,
+        "cumulative_prob": 30.52
+      },
+      {
+        "round": 11,
+        "label": "독산역 롯데캐슬 59A",
+        "this_prob": 1.11,
+        "cumulative_prob": 31.29
+      }
+    ],
+    "monte_carlo": {
+      "simulations": 10000,
+      "max_rounds": 30,
+      "best_type": "신동탄 롯데캐슬 84B",
+      "win_rate": 87.6,
+      "wins_within": {
+        "1": 6.7,
+        "3": 18.6,
+        "5": 29.2,
+        "10": 49.8,
+        "15": 64.5,
+        "20": 74.9
+      },
+      "avg_rounds_to_win": 10.7,
+      "median_rounds_to_win": 9
+    },
+    "recommendation": {
+      "best_type": "신동탄 롯데캐슬 84B",
+      "best_rate": 26.0,
+      "best_prob": 7.31,
+      "best_prob_direct": 3.85,
+      "best_prob_reserve": 3.46,
+      "rounds_to_50pct": 10,
+      "rounds_to_80pct": null,
+      "mc_avg_rounds": 10.7,
+      "mc_median_rounds": 9
+    }
+  },
   "complexes": {
     "신동탄 롯데캐슬": {
       "total_rounds": 3,

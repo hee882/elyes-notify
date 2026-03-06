@@ -347,6 +347,153 @@
         .insight-message { color: #e2e8f0; font-weight: 600; }
         .insight-detail { color: #94a3b8; font-size: 12px; margin-top: 2px; }
 
+        /* 시뮬레이션 섹션 */
+        .sim-params {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 14px 20px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .sim-params strong { color: #e2e8f0; }
+
+        .rec-card {
+            background: linear-gradient(135deg, #064e3b, #0f172a);
+            border: 1px solid #22c55e40;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .rec-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4ade80;
+            margin-bottom: 8px;
+        }
+        .rec-main {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .rec-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .rec-stat {
+            text-align: center;
+        }
+        .rec-stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #4ade80;
+        }
+        .rec-stat-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .prob-table { margin-bottom: 20px; }
+        .prob-table table { min-width: 560px; }
+        .prob-bar-cell {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .prob-bar {
+            height: 20px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+            min-width: 2px;
+        }
+        .prob-val {
+            font-weight: 700;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .cumul-section { margin-bottom: 24px; }
+        .cumul-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 0;
+        }
+        .cumul-label {
+            width: 40px;
+            text-align: right;
+            font-size: 12px;
+            color: #94a3b8;
+            flex-shrink: 0;
+        }
+        .cumul-bar-wrap {
+            flex: 1;
+            height: 22px;
+            background: #0f172a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .cumul-bar {
+            height: 100%;
+            border-radius: 6px;
+            min-width: 2px;
+            transition: width 0.6s ease;
+        }
+        .cumul-bar.green { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .cumul-bar.yellow { background: linear-gradient(90deg, #eab308, #f59e0b); }
+        .cumul-bar.blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .cumul-value {
+            width: 52px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .mc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .mc-card {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 16px;
+            text-align: center;
+        }
+        .mc-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+        .mc-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .conf-high { background: #065f46; color: #6ee7b7; }
+        .conf-medium { background: #78350f; color: #fcd34d; }
+        .conf-low { background: #7f1d1d; color: #fca5a5; }
+
         /* 버전 배너 */
         .version-banner {
             background: linear-gradient(135deg, #1e293b, #0f172a);
@@ -387,6 +534,8 @@
             .stat-card .value { font-size: 24px; }
             .title-cell { max-width: 300px; }
             .type-row { grid-template-columns: 60px 1fr 70px 40px; gap: 8px; }
+            .mc-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .rec-main { font-size: 16px; }
         }
         @media (max-width: 480px) {
             .container { padding: 16px 12px; }
@@ -421,6 +570,11 @@
             .type-name { font-size: 12px; }
             .rate-bar-wrap { height: 22px; }
             .analysis-meta { padding: 12px 14px; font-size: 12px; }
+            .mc-grid { grid-template-columns: repeat(2, 1fr); }
+            .rec-stats { gap: 12px; }
+            .rec-stat-value { font-size: 18px; }
+            .rec-main { font-size: 15px; }
+            .prob-table table { min-width: 480px; }
         }
     </style>
 </head>
@@ -632,6 +786,138 @@
             return html;
         }
 
+        function confBadge(level) {
+            const map = { high: ['conf-high', '높음'], medium: ['conf-medium', '보통'], low: ['conf-low', '낮음'] };
+            const [cls, label] = map[level] || map.low;
+            return `<span class="confidence-badge ${cls}">${label}</span>`;
+        }
+
+        function renderOptimization(opt) {
+            if (!opt || !opt.candidates || opt.candidates.length === 0) return '';
+
+            const { params, candidates, repetition, monte_carlo: mc, recommendation: rec } = opt;
+            let html = '';
+
+            // 섹션 제목
+            html += '<div class="section-title" style="margin-top:32px;">당첨 확률 시뮬레이션</div>';
+
+            // 파라미터
+            html += `
+                <div class="sim-params">
+                    <span>예비번호: <strong>${params.reserve_multiplier}배수</strong></span>
+                    <span>예비 전환율: <strong>${Math.round(params.reserve_conversion * 100)}%</strong></span>
+                    <span>시뮬레이션: <strong>${mc.simulations ? mc.simulations.toLocaleString() : '-'}회</strong></span>
+                </div>
+            `;
+
+            // 추천 카드
+            if (rec && rec.best_prob) {
+                html += `
+                    <div class="rec-card">
+                        <div class="rec-title">최적 전략 추천</div>
+                        <div class="rec-main">${rec.best_type} (예상 ${rec.best_rate}:1)</div>
+                        <div class="rec-stats">
+                            <div class="rec-stat">
+                                <div class="rec-stat-value">${rec.best_prob}%</div>
+                                <div class="rec-stat-label">1회 당첨 확률</div>
+                            </div>
+                            <div class="rec-stat">
+                                <div class="rec-stat-value">${rec.best_prob_direct}%</div>
+                                <div class="rec-stat-label">직접 당첨</div>
+                            </div>
+                            <div class="rec-stat">
+                                <div class="rec-stat-value">${rec.best_prob_reserve}%</div>
+                                <div class="rec-stat-label">예비 당첨</div>
+                            </div>
+                            ${rec.rounds_to_50pct ? `<div class="rec-stat">
+                                <div class="rec-stat-value">${rec.rounds_to_50pct}회</div>
+                                <div class="rec-stat-label">50% 돌파</div>
+                            </div>` : ''}
+                            ${mc.avg_rounds_to_win ? `<div class="rec-stat">
+                                <div class="rec-stat-value">${mc.avg_rounds_to_win}회</div>
+                                <div class="rec-stat-label">평균 당첨</div>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 타입별 당첨 확률 테이블
+            html += '<div class="section-title">타입별 당첨 확률</div>';
+            html += '<div class="table-wrap prob-table"><table>';
+            html += `<thead><tr>
+                <th>#</th>
+                <th>단지 / 타입</th>
+                <th>예상 경쟁률</th>
+                <th>당첨 확률</th>
+                <th>직접</th>
+                <th>예비</th>
+                <th>신뢰도</th>
+            </tr></thead><tbody>`;
+
+            const maxProb = candidates[0].win_prob;
+            candidates.forEach((c, i) => {
+                const barW = Math.min(100, (c.win_prob / maxProb) * 100);
+                html += `<tr>
+                    <td style="color:#64748b;">${i + 1}</td>
+                    <td><strong>${c.complex}</strong> ${c.type}</td>
+                    <td>${c.predicted_rate}:1 <span style="color:#64748b;font-size:11px;">(${c.rate_range[0]}~${c.rate_range[1]})</span></td>
+                    <td><div class="prob-bar-cell">
+                        <div class="prob-bar" style="width:${barW}%;"></div>
+                        <span class="prob-val">${c.win_prob}%</span>
+                    </div></td>
+                    <td style="font-size:12px;">${c.win_prob_direct}%</td>
+                    <td style="font-size:12px;">${c.win_prob_reserve}%</td>
+                    <td>${confBadge(c.confidence)}</td>
+                </tr>`;
+            });
+            html += '</tbody></table></div>';
+
+            // 누적 당첨 확률 (최적 타입 연속 지원)
+            if (repetition && repetition.length > 0) {
+                html += '<div class="section-title">누적 당첨 확률 (최적 타입 연속 지원)</div>';
+                html += '<div class="cumul-section" style="background:#1e293b;border-radius:12px;border:1px solid #334155;padding:16px 20px;">';
+
+                const milestones = [1, 2, 3, 5, 7, 10, 15, 20];
+                for (const m of milestones) {
+                    const r = repetition.find(x => x.rounds === m);
+                    if (!r) continue;
+                    const p = r.prob;
+                    const barColor = p >= 50 ? 'green' : p >= 20 ? 'yellow' : 'blue';
+                    html += `<div class="cumul-row">
+                        <span class="cumul-label">${m}회</span>
+                        <div class="cumul-bar-wrap">
+                            <div class="cumul-bar ${barColor}" style="width:${Math.min(100, p)}%;"></div>
+                        </div>
+                        <span class="cumul-value">${p}%</span>
+                    </div>`;
+                }
+
+                html += '</div>';
+            }
+
+            // 몬테카를로 결과
+            if (mc && mc.wins_within) {
+                html += '<div class="section-title" style="margin-top:20px;">몬테카를로 시뮬레이션 결과</div>';
+                html += '<div class="mc-grid">';
+                const milestones = [
+                    [1, '1회 당첨'], [3, '3회 내'], [5, '5회 내'],
+                    [10, '10회 내'], [15, '15회 내'], [20, '20회 내']
+                ];
+                for (const [k, label] of milestones) {
+                    const pct = mc.wins_within[k];
+                    if (pct === undefined) continue;
+                    html += `<div class="mc-card">
+                        <div class="mc-value">${pct}%</div>
+                        <div class="mc-label">${label} 당첨</div>
+                    </div>`;
+                }
+                html += '</div>';
+            }
+
+            return html;
+        }
+
         function renderAnalysis(data) {
             const { meta, complexes, insights } = data;
             const wrap = document.getElementById('analysisContent');
@@ -742,6 +1028,11 @@
 
             if (sortedComplexes.length === 0) {
                 html += '<div class="empty">경쟁률 분석 데이터가 없습니다.</div>';
+            }
+
+            // 당첨 확률 시뮬레이션
+            if (data.optimization) {
+                html += renderOptimization(data.optimization);
             }
 
             wrap.innerHTML = html;

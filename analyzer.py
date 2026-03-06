@@ -11,6 +11,7 @@
 
 import json
 import os
+import random
 import re
 import sys
 from datetime import datetime, timezone, timedelta
@@ -549,6 +550,261 @@ def _add_strategy_insights(insights, all_types, histories, analysis):
             break  # 하나만
 
 
+# ====== 당첨 확률 최적화 ======
+
+def predict_rate(history, trend="stable"):
+    """경쟁률을 지수가중이동평균(EWMA)으로 예측한다.
+
+    Returns:
+        dict: predicted, low, high (95% CI), std, confidence, n_data
+    """
+    if not history:
+        return None
+
+    sorted_h = sorted(history, key=lambda x: x["date"])
+    rates = [h["rate"] for h in sorted_h]
+    n = len(rates)
+
+    if n == 1:
+        r = rates[0]
+        return {
+            "predicted": r,
+            "low": round(max(1, r * 0.5), 1),
+            "high": round(r * 2.0, 1),
+            "std": round(r * 0.5, 1),
+            "confidence": "low",
+            "n_data": 1,
+        }
+
+    # EWMA (alpha=0.4, 최근 데이터 가중)
+    alpha = 0.4
+    weights = [(1 - alpha) ** (n - 1 - i) for i in range(n)]
+    w_sum = sum(weights)
+    ewa = sum(r * w for r, w in zip(rates, weights)) / w_sum
+
+    # 가중 표준편차 (최소 10% 불확실성)
+    var = sum(w * (r - ewa) ** 2 for r, w in zip(rates, weights)) / w_sum
+    std = max(var ** 0.5, ewa * 0.1)
+
+    # 추세 반영
+    predicted = ewa
+    if trend == "up":
+        predicted *= 1.1
+    elif trend == "down":
+        predicted *= 0.9
+
+    # 소표본 보정 신뢰구간
+    z = 1.96 * (1 + 1.5 / n)
+    low = max(1, predicted - z * std)
+    high = predicted + z * std
+
+    return {
+        "predicted": round(predicted, 1),
+        "low": round(low, 1),
+        "high": round(high, 1),
+        "std": round(std, 1),
+        "confidence": "high" if n >= 5 else ("medium" if n >= 3 else "low"),
+        "n_data": n,
+    }
+
+
+def win_probability(rate, reserve_multiplier=3, reserve_conversion=0.3):
+    """당첨 확률을 계산한다 (직접 당첨 + 예비번호).
+
+    Args:
+        rate: 경쟁률 (지원자/세대)
+        reserve_multiplier: 예비번호 배수 (기본 3배수)
+        reserve_conversion: 예비번호 실제 전환율 (기본 30%)
+
+    Returns:
+        dict: direct, reserve, total 확률
+    """
+    if rate <= 1:
+        return {"direct": 1.0, "reserve": 0.0, "total": 1.0}
+
+    p_direct = 1.0 / rate
+
+    # 예비번호: 직접 당첨 못한 사람 중에서 reserve_multiplier 배수만큼 선발
+    # P(예비 선발 | 미당첨) = min(1, reserve_multiplier / (rate - 1))
+    p_reserve_selected = min(1.0, reserve_multiplier / (rate - 1))
+    p_reserve = (1 - p_direct) * p_reserve_selected * reserve_conversion
+
+    return {
+        "direct": round(p_direct, 6),
+        "reserve": round(p_reserve, 6),
+        "total": round(min(1.0, p_direct + p_reserve), 6),
+    }
+
+
+def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3):
+    """당첨 확률 최적화 전략을 생성한다.
+
+    - 타입별 예상 경쟁률 + 당첨 확률
+    - 누적 당첨 확률 (연속 지원 시)
+    - 몬테카를로 시뮬레이션
+    - 최적 전략 추천
+    """
+    candidates = []
+
+    for cname, cdata in analysis.items():
+        for tname, tdata in cdata["types"].items():
+            hist = tdata.get("history", [])
+            trend = tdata.get("trend", "stable")
+            pred = predict_rate(hist, trend)
+            if not pred:
+                continue
+
+            prob = win_probability(pred["predicted"], reserve_multiplier, reserve_conversion)
+            prob_worst = win_probability(pred["high"], reserve_multiplier, reserve_conversion)
+            prob_best = win_probability(pred["low"], reserve_multiplier, reserve_conversion)
+
+            candidates.append({
+                "complex": cname,
+                "type": tname,
+                "predicted_rate": pred["predicted"],
+                "rate_range": [pred["low"], pred["high"]],
+                "rate_std": pred["std"],
+                "confidence": pred["confidence"],
+                "n_data": pred["n_data"],
+                "trend": trend,
+                "win_prob": round(prob["total"] * 100, 2),
+                "win_prob_direct": round(prob["direct"] * 100, 2),
+                "win_prob_reserve": round(prob["reserve"] * 100, 2),
+                "win_prob_range": [
+                    round(prob_worst["total"] * 100, 2),
+                    round(prob_best["total"] * 100, 2),
+                ],
+            })
+
+    candidates.sort(key=lambda x: x["win_prob"], reverse=True)
+
+    # 최적 타입 연속 지원 시 누적 확률
+    best_prob = candidates[0]["win_prob"] / 100 if candidates else 0
+    repetition = []
+    for k in range(1, 21):
+        p_win_by_k = 1 - (1 - best_prob) ** k
+        repetition.append({
+            "rounds": k,
+            "prob": round(p_win_by_k * 100, 2),
+        })
+
+    # 다양한 타입 순차 지원 시 누적 확률
+    cumulative = []
+    p_all_lose = 1.0
+    for i, c in enumerate(candidates):
+        p_all_lose *= (1 - c["win_prob"] / 100)
+        cumulative.append({
+            "round": i + 1,
+            "label": f"{c['complex']} {c['type']}",
+            "this_prob": c["win_prob"],
+            "cumulative_prob": round((1 - p_all_lose) * 100, 2),
+        })
+
+    # 몬테카를로 시뮬레이션
+    mc = _monte_carlo_rounds(
+        candidates, n_sims=10000, max_rounds=30,
+        reserve_multiplier=reserve_multiplier,
+        reserve_conversion=reserve_conversion,
+    )
+
+    return {
+        "params": {
+            "reserve_multiplier": reserve_multiplier,
+            "reserve_conversion": reserve_conversion,
+        },
+        "candidates": candidates,
+        "repetition": repetition,
+        "cumulative": cumulative,
+        "monte_carlo": mc,
+        "recommendation": _build_recommendation(candidates, repetition, mc),
+    }
+
+
+def _monte_carlo_rounds(candidates, n_sims=10000, max_rounds=30,
+                         reserve_multiplier=3, reserve_conversion=0.3):
+    """경쟁률 불확실성을 반영한 몬테카를로 시뮬레이션.
+
+    매 라운드 최적 타입의 경쟁률을 삼각분포로 샘플링하여
+    첫 당첨까지 걸리는 라운드 수를 시뮬레이션한다.
+    """
+    random.seed(42)
+
+    if not candidates:
+        return {"simulations": 0}
+
+    best = candidates[0]
+    low = max(1, best["rate_range"][0])
+    high = max(best["rate_range"][1], best["predicted_rate"] + 1)
+    pred = best["predicted_rate"]
+
+    first_win_rounds = []
+
+    for _ in range(n_sims):
+        for k in range(1, max_rounds + 1):
+            sampled_rate = random.triangular(low, high, pred)
+            prob = win_probability(sampled_rate, reserve_multiplier, reserve_conversion)
+
+            if random.random() < prob["total"]:
+                first_win_rounds.append(k)
+                break
+        else:
+            first_win_rounds.append(max_rounds + 1)
+
+    # 통계
+    wins_within = {}
+    for target in [1, 3, 5, 10, 15, 20]:
+        count = sum(1 for r in first_win_rounds if r <= target)
+        wins_within[target] = round(count / n_sims * 100, 1)
+
+    actual_wins = [r for r in first_win_rounds if r <= max_rounds]
+    avg_rounds = round(sum(actual_wins) / max(len(actual_wins), 1), 1) if actual_wins else None
+    median_rounds = sorted(actual_wins)[len(actual_wins) // 2] if actual_wins else None
+
+    return {
+        "simulations": n_sims,
+        "max_rounds": max_rounds,
+        "best_type": f"{best['complex']} {best['type']}",
+        "win_rate": round(len(actual_wins) / n_sims * 100, 1),
+        "wins_within": wins_within,
+        "avg_rounds_to_win": avg_rounds,
+        "median_rounds_to_win": median_rounds,
+    }
+
+
+def _build_recommendation(candidates, repetition, mc):
+    """실행 가능한 전략 추천을 생성한다."""
+    if not candidates:
+        return {"summary": "데이터 부족"}
+
+    best = candidates[0]
+
+    # 50% 돌파 라운드
+    rounds_to_50 = None
+    for r in repetition:
+        if r["prob"] >= 50:
+            rounds_to_50 = r["rounds"]
+            break
+
+    # 80% 돌파 라운드
+    rounds_to_80 = None
+    for r in repetition:
+        if r["prob"] >= 80:
+            rounds_to_80 = r["rounds"]
+            break
+
+    return {
+        "best_type": f"{best['complex']} {best['type']}",
+        "best_rate": best["predicted_rate"],
+        "best_prob": best["win_prob"],
+        "best_prob_direct": best["win_prob_direct"],
+        "best_prob_reserve": best["win_prob_reserve"],
+        "rounds_to_50pct": rounds_to_50,
+        "rounds_to_80pct": rounds_to_80,
+        "mc_avg_rounds": mc.get("avg_rounds_to_win"),
+        "mc_median_rounds": mc.get("median_rounds_to_win"),
+    }
+
+
 def run_analysis():
     """분석을 실행하고 결과를 저장한다. 이전 결과가 있으면 증분 업데이트."""
     prev = load_previous_analysis()
@@ -621,6 +877,17 @@ def run_analysis():
     print("인사이트 생성 중...")
     insights = generate_insights(analysis)
 
+    print("당첨 확률 최적화 중...")
+    optimization = generate_optimization(analysis)
+    rec = optimization.get("recommendation", {})
+    if rec.get("best_prob"):
+        print(f"  최적 타입: {rec['best_type']} — 1회 {rec['best_prob']}%")
+        if rec.get("rounds_to_50pct"):
+            print(f"  50% 돌파: {rec['rounds_to_50pct']}회 연속 지원")
+        mc = optimization.get("monte_carlo", {})
+        if mc.get("avg_rounds_to_win"):
+            print(f"  시뮬레이션 평균: {mc['avg_rounds_to_win']}회 만에 당첨")
+
     dates = [p["date"] for p in posts if p["date"]]
     date_range = {"from": min(dates), "to": max(dates)} if dates else {}
 
@@ -640,6 +907,7 @@ def run_analysis():
             "changelog": _build_changelog(prev, new_version, now_kst, new_ids, new_matches),
         },
         "insights": insights,
+        "optimization": optimization,
         "complexes": analysis,
         "matches": [
             {
