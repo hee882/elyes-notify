@@ -202,6 +202,41 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* 페이징 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            cursor: pointer;
+            min-width: 36px;
+        }
+        .pagination button:hover { background: #334155; }
+        .pagination button.active {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+        .page-info {
+            color: #64748b;
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
         /* ====== 경쟁률 분석 탭 ====== */
         .analysis-meta {
             background: #1e293b;
@@ -719,6 +754,7 @@
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
+                <div id="pagination" style="display:none;"></div>
                 <div id="empty" class="empty" style="display:none;">
                     아직 알림 이력이 없습니다.
                 </div>
@@ -892,6 +928,10 @@
             }
         }
 
+        const PAGE_SIZE = 20;
+        let filteredRecords = [];
+        let currentPage = 1;
+
         function renderNotify(data) {
             const { records, stats } = data;
             document.getElementById('totalSent').textContent = stats.total_sent || 0;
@@ -906,11 +946,21 @@
                 return;
             }
 
-            const table = document.getElementById('historyTable');
-            const tbody = document.getElementById('tableBody');
-            table.style.display = 'table';
+            filteredRecords = records.filter(r => !r.title.includes('어바니엘'));
+            document.getElementById('historyTable').style.display = 'table';
+            renderPage(1);
+        }
 
-            records.filter(r => !r.title.includes('어바니엘')).forEach(r => {
+        function renderPage(page) {
+            currentPage = page;
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            const totalPages = Math.ceil(filteredRecords.length / PAGE_SIZE);
+            const start = (page - 1) * PAGE_SIZE;
+            const pageRecords = filteredRecords.slice(start, start + PAGE_SIZE);
+
+            pageRecords.forEach(r => {
                 const tr = document.createElement('tr');
                 const imgIcon = r.has_image ? ' <span class="img-icon">[IMG]</span>' : '';
                 const href = r.detail_url || 'https://www.elyes.co.kr/post/recruit';
@@ -924,6 +974,33 @@
                 `;
                 tbody.appendChild(tr);
             });
+
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) { container.style.display = 'none'; return; }
+            container.style.display = 'flex';
+            container.className = 'pagination';
+
+            let html = `<button ${currentPage === 1 ? 'disabled' : ''} onclick="renderPage(${currentPage - 1})">&laquo;</button>`;
+
+            // Show pages around current
+            const range = 2;
+            let startP = Math.max(1, currentPage - range);
+            let endP = Math.min(totalPages, currentPage + range);
+            if (startP > 1) html += `<button onclick="renderPage(1)">1</button>`;
+            if (startP > 2) html += `<span style="color:#64748b;padding:0 4px;">…</span>`;
+            for (let i = startP; i <= endP; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="renderPage(${i})">${i}</button>`;
+            }
+            if (endP < totalPages - 1) html += `<span style="color:#64748b;padding:0 4px;">…</span>`;
+            if (endP < totalPages) html += `<button onclick="renderPage(${totalPages})">${totalPages}</button>`;
+
+            html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="renderPage(${currentPage + 1})">&raquo;</button>`;
+            html += `<span class="page-info">${filteredRecords.length}건</span>`;
+            container.innerHTML = html;
         }
 
         /* ====== 경쟁률 분석 ====== */
