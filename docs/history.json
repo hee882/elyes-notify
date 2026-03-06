@@ -1,6 +1,15 @@
 {
   "records": [
     {
+      "id": "22649",
+      "title": "[어바니엘 염창] 공실세대 모집공고 (접수기간 : 3/6 ~ 3/8)",
+      "date": "2026.03.06",
+      "notified_at": "2026-03-06 18:19",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=UpnKwLwIeRf22%2BvP9og1lw%3D%3D"
+    },
+    {
       "id": "22647",
       "title": "[어바니엘 가산] 공실세대 모집공고 (접수기간: 3/6~3/8)",
       "date": "2026.03.06",
@@ -82,7 +91,10 @@
     }
   ],
   "stats": {
-    "total_sent": 10,
-    "last_run": "2026-03-06 16:19"
+    "total_sent": 11,
+    "last_run": "2026-03-06 18:19",
+    "token_status": "active",
+    "token_refreshed_at": "2026-03-06 18:19",
+    "refresh_token_renewed": false
   }
 }
