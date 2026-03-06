@@ -744,7 +744,7 @@
                 <div class="token-info" id="tokenInfo">토큰 상태 확인 중...</div>
             </div>
 
-            <div class="section-title">알림 이력</div>
+            <div class="section-title">최근 알림 이력</div>
             <div class="table-wrap">
                 <div id="loading" class="loading">
                     <div class="spinner"></div>
@@ -868,24 +868,6 @@
                 </div>
             </div>
 
-            <!-- 최근 알림 이력 -->
-            <div class="api-section">
-                <div class="api-section-title">최근 알림 이력</div>
-                <div class="table-wrap">
-                    <table id="kakaoHistoryTable" style="display:none;">
-                        <thead>
-                            <tr>
-                                <th>상태</th>
-                                <th>제목</th>
-                                <th>시각</th>
-                                <th>비고</th>
-                            </tr>
-                        </thead>
-                        <tbody id="kakaoHistoryBody"></tbody>
-                    </table>
-                    <div id="kakaoHistoryEmpty" class="empty">알림 이력을 불러오는 중...</div>
-                </div>
-            </div>
         </div>
 
         <div class="footer">
@@ -1350,32 +1332,6 @@
                 document.getElementById('kRefreshRenewed').className = 'api-stat-value ok';
             }
 
-            // 최근 알림 이력 (최대 20건)
-            const emptyEl = document.getElementById('kakaoHistoryEmpty');
-            if (!records || records.length === 0) {
-                emptyEl.textContent = '알림 이력이 없습니다.';
-                return;
-            }
-
-            emptyEl.style.display = 'none';
-            const table = document.getElementById('kakaoHistoryTable');
-            const tbody = document.getElementById('kakaoHistoryBody');
-            table.style.display = 'table';
-
-            const recent = records.slice(0, 20);
-            for (const r of recent) {
-                const tr = document.createElement('tr');
-                const note = r.error ? `<span style="color:#f87171;font-size:11px;">${r.error}</span>`
-                    : r.retry ? '<span style="color:#93c5fd;font-size:11px;">재전송</span>'
-                    : '';
-                tr.innerHTML = `
-                    <td>${badgeHTML(r.status)}</td>
-                    <td class="title-cell" title="${r.title}">${r.title}</td>
-                    <td style="white-space:nowrap;">${r.notified_at || '-'}</td>
-                    <td>${note}</td>
-                `;
-                tbody.appendChild(tr);
-            }
         }
 
         /* ====== 초기화 ====== */
