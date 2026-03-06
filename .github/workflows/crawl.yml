@@ -1,0 +1,43 @@
+name: Elyes 모집공고 알림
+
+on:
+  schedule:
+    # 평일(월~금) 오전 10시 KST = UTC 01:00
+    - cron: '0 1 * * 1-5'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore seen posts cache
+        uses: actions/cache@v4
+        with:
+          path: seen_posts.json
+          key: seen-posts-${{ github.run_id }}
+          restore-keys: seen-posts-
+
+      - name: Run crawler & notify
+        id: crawl
+        env:
+          KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          KAKAO_REFRESH_TOKEN: ${{ secrets.KAKAO_REFRESH_TOKEN }}
+        run: python main.py
+
+      - name: Update refresh token if renewed
+        if: steps.crawl.outputs.new_refresh_token != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh secret set KAKAO_REFRESH_TOKEN --body "${{ steps.crawl.outputs.new_refresh_token }}" --repo ${{ github.repository }}
