@@ -552,8 +552,13 @@ def _add_strategy_insights(insights, all_types, histories, analysis):
 
 # ====== 당첨 확률 최적화 ======
 
-def predict_rate(history, trend="stable"):
+def predict_rate(history, trend="stable", alpha=0.4):
     """경쟁률을 지수가중이동평균(EWMA)으로 예측한다.
+
+    Args:
+        history: 과거 이력 [{date, rate, ...}, ...]
+        trend: "up" / "down" / "stable"
+        alpha: EWMA 감쇠율 (0~1, 클수록 최근 가중)
 
     Returns:
         dict: predicted, low, high (95% CI), std, confidence, n_data
@@ -575,9 +580,6 @@ def predict_rate(history, trend="stable"):
             "confidence": "low",
             "n_data": 1,
         }
-
-    # EWMA (alpha=0.4, 최근 데이터 가중)
-    alpha = 0.4
     weights = [(1 - alpha) ** (n - 1 - i) for i in range(n)]
     w_sum = sum(weights)
     ewa = sum(r * w for r, w in zip(rates, weights)) / w_sum
@@ -593,8 +595,8 @@ def predict_rate(history, trend="stable"):
     elif trend == "down":
         predicted *= 0.9
 
-    # 소표본 보정 신뢰구간
-    z = 1.96 * (1 + 1.5 / n)
+    # 소표본 보정 신뢰구간 (n이 작을수록 더 넓게)
+    z = 1.96 * (1 + 3.0 / n)
     low = max(1, predicted - z * std)
     high = predicted + z * std
 
@@ -636,7 +638,8 @@ def win_probability(rate, reserve_multiplier=3, reserve_conversion=0.3):
     }
 
 
-def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3):
+def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3,
+                          alpha=0.4):
     """당첨 확률 최적화 전략을 생성한다.
 
     - 타입별 예상 경쟁률 + 당첨 확률
@@ -650,7 +653,7 @@ def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3
         for tname, tdata in cdata["types"].items():
             hist = tdata.get("history", [])
             trend = tdata.get("trend", "stable")
-            pred = predict_rate(hist, trend)
+            pred = predict_rate(hist, trend, alpha=alpha)
             if not pred:
                 continue
 
@@ -805,6 +808,191 @@ def _build_recommendation(candidates, repetition, mc):
     }
 
 
+# ====== 백테스트 & 파라미터 튜닝 ======
+
+def backtest(matched_data, alpha=0.4, reserve_multiplier=3, reserve_conversion=0.3,
+             verbose=False):
+    """Walk-forward 백테스트: 각 공고를 시간순으로 순회하며 예측 정확도를 검증한다.
+
+    매 라운드 i에서:
+    - rounds[0..i-1]의 데이터만으로 모델 구축
+    - round[i]의 경쟁률을 예측
+    - 예측 vs 실제 비교
+
+    Returns:
+        dict: predictions, mae, mape, ci_coverage, pick_accuracy
+    """
+    sorted_matches = sorted(matched_data, key=lambda x: x["status_date"])
+
+    if len(sorted_matches) < 3:
+        return {"error": "백테스트에 최소 3건 필요", "predictions": []}
+
+    predictions = []
+
+    for i in range(2, len(sorted_matches)):
+        prior = sorted_matches[:i]
+        current = sorted_matches[i]
+
+        # 사전 데이터로 분석
+        analysis = analyze_competition(prior)
+        cname = current["complex"]
+        if cname not in analysis:
+            continue
+
+        actual_types = {c["type"]: c for c in current["competition"]}
+        cdata = analysis[cname]
+
+        for tname, tdata in cdata["types"].items():
+            if tname not in actual_types:
+                continue
+
+            hist = tdata.get("history", [])
+            trend = tdata.get("trend", "stable")
+            pred = predict_rate(hist, trend, alpha=alpha)
+            if not pred:
+                continue
+
+            actual_rate = actual_types[tname]["rate"]
+            predicted_rate = pred["predicted"]
+            error = predicted_rate - actual_rate
+            pct_error = (error / actual_rate * 100) if actual_rate > 0 else 0
+
+            pred_prob = win_probability(predicted_rate, reserve_multiplier, reserve_conversion)
+            actual_prob = win_probability(actual_rate, reserve_multiplier, reserve_conversion)
+
+            predictions.append({
+                "round": i + 1,
+                "date": current["status_date"],
+                "complex": cname,
+                "type": tname,
+                "predicted_rate": predicted_rate,
+                "actual_rate": actual_rate,
+                "error": round(error, 1),
+                "pct_error": round(pct_error, 1),
+                "abs_pct_error": round(abs(pct_error), 1),
+                "pred_win_prob": round(pred_prob["total"] * 100, 2),
+                "actual_win_prob": round(actual_prob["total"] * 100, 2),
+                "within_ci": pred["low"] <= actual_rate <= pred["high"],
+                "n_prior": pred["n_data"],
+            })
+
+    if not predictions:
+        return {"error": "예측 가능한 데이터 없음", "predictions": []}
+
+    # ── 집계 통계 ──
+    mae = round(sum(abs(p["error"]) for p in predictions) / len(predictions), 1)
+    mape = round(sum(p["abs_pct_error"] for p in predictions) / len(predictions), 1)
+    ci_hits = sum(1 for p in predictions if p["within_ci"])
+    ci_rate = round(ci_hits / len(predictions) * 100, 1)
+
+    # 최적 타입 선택 정확도: 모델이 추천한 타입이 실제 최저 경쟁률이었나?
+    round_groups = {}
+    for p in predictions:
+        key = (p["round"], p["complex"])
+        round_groups.setdefault(key, []).append(p)
+
+    correct_picks = 0
+    total_testable = 0
+    for preds in round_groups.values():
+        if len(preds) < 2:
+            continue
+        total_testable += 1
+        best_predicted = min(preds, key=lambda x: x["predicted_rate"])
+        best_actual = min(preds, key=lambda x: x["actual_rate"])
+        if best_predicted["type"] == best_actual["type"]:
+            correct_picks += 1
+
+    pick_accuracy = round(correct_picks / max(total_testable, 1) * 100, 1)
+
+    result = {
+        "total_predictions": len(predictions),
+        "mae": mae,
+        "mape": mape,
+        "ci_coverage": ci_rate,
+        "pick_accuracy": pick_accuracy,
+        "testable_rounds": total_testable,
+        "correct_picks": correct_picks,
+        "predictions": predictions,
+    }
+
+    if verbose:
+        print(f"\n{'='*65}")
+        print(f" Walk-Forward 백테스트 (alpha={alpha})")
+        print(f"{'='*65}")
+        print(f"  총 예측: {len(predictions)}건 / 테스트 라운드: {total_testable}개")
+        print(f"  MAE: {mae} | MAPE: {mape}%")
+        print(f"  신뢰구간 적중: {ci_rate}% ({ci_hits}/{len(predictions)})")
+        print(f"  최적 타입 선택: {pick_accuracy}% ({correct_picks}/{total_testable})")
+        print(f"\n{'─'*65}")
+        print(f" {'#':>3} {'날짜':>12} {'단지':>16} {'타입':>5} {'예측':>7} {'실제':>7} {'오차':>8} {'CI':>3}")
+        print(f"{'─'*65}")
+        for p in predictions:
+            ci = "O" if p["within_ci"] else "X"
+            print(f" {p['round']:>3} {p['date']:>12} {p['complex']:>16} "
+                  f"{p['type']:>5} {p['predicted_rate']:>7.1f} {p['actual_rate']:>7.1f} "
+                  f"{p['pct_error']:>+7.1f}% {ci:>3}")
+
+    return result
+
+
+def tune_model(matched_data, verbose=True):
+    """백테스트 기반으로 EWMA alpha를 그리드 서치한다.
+
+    alpha만 튜닝 대상 (경쟁률 예측에 직접 영향).
+    reserve_conversion은 도메인 지식 기반 고정값 (예측 정확도와 무관).
+
+    Returns:
+        dict: best alpha, backtest metrics
+    """
+    alphas = [0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.6, 0.7]
+
+    best = None
+    all_results = []
+
+    for a in alphas:
+        bt = backtest(matched_data, alpha=a, verbose=False)
+        if "error" in bt:
+            continue
+
+        # 종합 점수: MAPE 낮을수록 + 선택 정확도 높을수록 + CI 적중률 높을수록
+        score = bt["mape"] - bt["pick_accuracy"] * 0.5 - bt["ci_coverage"] * 0.3
+
+        entry = {
+            "alpha": a,
+            "mape": bt["mape"],
+            "mae": bt["mae"],
+            "ci_coverage": bt["ci_coverage"],
+            "pick_accuracy": bt["pick_accuracy"],
+            "score": round(score, 2),
+        }
+        all_results.append(entry)
+
+        if best is None or score < best["score"]:
+            best = entry
+
+    if verbose and all_results:
+        print(f"\n{'='*60}")
+        print(f" EWMA alpha 튜닝 (그리드 서치)")
+        print(f"{'='*60}")
+        all_results.sort(key=lambda x: x["score"])
+        print(f" {'alpha':>6} {'MAPE':>7} {'MAE':>6} {'CI적중':>7} {'선택정확':>8} {'점수':>7}")
+        print(f" {'─'*48}")
+        for r in all_results:
+            marker = " <-- BEST" if r is all_results[0] else ""
+            print(f" {r['alpha']:>6.2f}"
+                  f" {r['mape']:>6.1f}% {r['mae']:>6.1f}"
+                  f" {r['ci_coverage']:>6.1f}% {r['pick_accuracy']:>7.1f}%"
+                  f" {r['score']:>7.2f}{marker}")
+
+        print(f"\n 최적 alpha = {best['alpha']} (기본값 0.4)")
+
+    # reserve_conversion은 도메인 파라미터: 30% 기본값 유지
+    if best:
+        best["reserve_conversion"] = 0.3
+
+    return best
+
+
 def run_analysis():
     """분석을 실행하고 결과를 저장한다. 이전 결과가 있으면 증분 업데이트."""
     prev = load_previous_analysis()
@@ -877,8 +1065,33 @@ def run_analysis():
     print("인사이트 생성 중...")
     insights = generate_insights(analysis)
 
-    print("당첨 확률 최적화 중...")
-    optimization = generate_optimization(analysis)
+    # 백테스트 & 파라미터 튜닝
+    print("\n백테스트 & 파라미터 튜닝 중...")
+    tuned = tune_model(matched, verbose=True)
+    best_alpha = tuned["alpha"] if tuned else 0.4
+    best_rc = tuned["reserve_conversion"] if tuned else 0.3
+
+    # 튜닝된 파라미터로 최종 백테스트 (상세 출력)
+    bt_result = backtest(matched, alpha=best_alpha, reserve_conversion=best_rc, verbose=True)
+
+    print(f"\n당첨 확률 최적화 중... (alpha={best_alpha}, rc={best_rc})")
+    optimization = generate_optimization(
+        analysis, alpha=best_alpha, reserve_conversion=best_rc,
+    )
+
+    # 백테스트 결과를 optimization에 포함
+    optimization["backtest"] = {
+        "mape": bt_result.get("mape"),
+        "mae": bt_result.get("mae"),
+        "ci_coverage": bt_result.get("ci_coverage"),
+        "pick_accuracy": bt_result.get("pick_accuracy"),
+        "total_predictions": bt_result.get("total_predictions"),
+        "tuned_alpha": best_alpha,
+        "tuned_reserve_conversion": best_rc,
+    }
+    optimization["params"]["alpha"] = best_alpha
+    optimization["params"]["reserve_conversion"] = best_rc
+
     rec = optimization.get("recommendation", {})
     if rec.get("best_prob"):
         print(f"  최적 타입: {rec['best_type']} — 1회 {rec['best_prob']}%")

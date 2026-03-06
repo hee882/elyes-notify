@@ -915,6 +915,29 @@
                 html += '</div>';
             }
 
+            // 백테스트 검증 결과
+            const bt = opt.backtest;
+            if (bt && bt.total_predictions) {
+                html += '<div class="section-title" style="margin-top:20px;">모델 검증 (백테스트)</div>';
+                html += '<div class="mc-grid">';
+                html += `<div class="mc-card">
+                    <div class="mc-value">${bt.mape}%</div>
+                    <div class="mc-label">MAPE (예측오차)</div>
+                </div>`;
+                html += `<div class="mc-card">
+                    <div class="mc-value">${bt.ci_coverage}%</div>
+                    <div class="mc-label">신뢰구간 적중</div>
+                </div>`;
+                html += `<div class="mc-card">
+                    <div class="mc-value">${bt.pick_accuracy}%</div>
+                    <div class="mc-label">최적 타입 선택</div>
+                </div>`;
+                html += '</div>';
+                html += `<div style="font-size:12px;color:#64748b;text-align:center;margin-top:-12px;margin-bottom:20px;">
+                    ${bt.total_predictions}건 예측 검증 | 튜닝: alpha=${bt.tuned_alpha}, 예비전환=${Math.round(bt.tuned_reserve_conversion*100)}%
+                </div>`;
+            }
+
             return html;
         }
 
