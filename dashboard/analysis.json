@@ -1,0 +1,881 @@
+{
+  "meta": {
+    "analyzed_at": "2026-03-06 16:53",
+    "total_posts": 211,
+    "matched_results": 16,
+    "complexes": 3,
+    "date_range": {
+      "from": "2021.02.22",
+      "to": "2026.03.06"
+    }
+  },
+  "complexes": {
+    "신동탄 롯데캐슬": {
+      "total_rounds": 3,
+      "types": {
+        "59A": {
+          "appearances": 3,
+          "avg_rate": 56.5,
+          "weighted_rate": 54.2,
+          "recent_avg": 56.5,
+          "trend": "stable",
+          "difficulty": 3,
+          "total_units": 14,
+          "total_applicants": 803,
+          "history": [
+            {
+              "date": "2025.09.17",
+              "rate": 44.8,
+              "units": 4,
+              "co_types": [
+                "84A",
+                "84B",
+                "84C"
+              ]
+            },
+            {
+              "date": "2025.11.18",
+              "rate": 43.0,
+              "units": 5,
+              "co_types": [
+                "59B",
+                "84C"
+              ]
+            },
+            {
+              "date": "2026.03.06",
+              "rate": 81.8,
+              "units": 5,
+              "co_types": [
+                "59B"
+              ]
+            }
+          ]
+        },
+        "84A": {
+          "appearances": 1,
+          "avg_rate": 38.7,
+          "weighted_rate": 38.7,
+          "recent_avg": 38.7,
+          "trend": "stable",
+          "difficulty": 2,
+          "total_units": 3,
+          "total_applicants": 116,
+          "history": [
+            {
+              "date": "2025.09.17",
+              "rate": 38.7,
+              "units": 3,
+              "co_types": [
+                "59A",
+                "84B",
+                "84C"
+              ]
+            }
+          ]
+        },
+        "84B": {
+          "appearances": 1,
+          "avg_rate": 26.0,
+          "weighted_rate": 26.0,
+          "recent_avg": 26.0,
+          "trend": "stable",
+          "difficulty": 1,
+          "total_units": 1,
+          "total_applicants": 26,
+          "history": [
+            {
+              "date": "2025.09.17",
+              "rate": 26.0,
+              "units": 1,
+              "co_types": [
+                "59A",
+                "84A",
+                "84C"
+              ]
+            }
+          ]
+        },
+        "84C": {
+          "appearances": 2,
+          "avg_rate": 46.8,
+          "weighted_rate": 36.2,
+          "recent_avg": 46.8,
+          "trend": "stable",
+          "difficulty": 2,
+          "total_units": 3,
+          "total_applicants": 168,
+          "history": [
+            {
+              "date": "2025.09.17",
+              "rate": 19.0,
+              "units": 1,
+              "co_types": [
+                "59A",
+                "84A",
+                "84B"
+              ]
+            },
+            {
+              "date": "2025.11.18",
+              "rate": 74.5,
+              "units": 2,
+              "co_types": [
+                "59A",
+                "59B"
+              ]
+            }
+          ]
+        },
+        "59B": {
+          "appearances": 2,
+          "avg_rate": 43.0,
+          "weighted_rate": 41.7,
+          "recent_avg": 43.0,
+          "trend": "stable",
+          "difficulty": 2,
+          "total_units": 2,
+          "total_applicants": 86,
+          "history": [
+            {
+              "date": "2025.11.18",
+              "rate": 22.0,
+              "units": 1,
+              "co_types": [
+                "59A",
+                "84C"
+              ]
+            },
+            {
+              "date": "2026.03.06",
+              "rate": 64.0,
+              "units": 1,
+              "co_types": [
+                "59A"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "동탄2 롯데캐슬": {
+      "total_rounds": 11,
+      "types": {
+        "74A": {
+          "appearances": 11,
+          "avg_rate": 105.5,
+          "weighted_rate": 108.4,
+          "recent_avg": 97.3,
+          "trend": "stable",
+          "difficulty": 5,
+          "total_units": 30,
+          "total_applicants": 3029,
+          "history": [
+            {
+              "date": "2025.02.25",
+              "rate": 119.0,
+              "units": 3,
+              "co_types": [
+                "74B"
+              ]
+            },
+            {
+              "date": "2025.04.11",
+              "rate": 65.7,
+              "units": 3,
+              "co_types": [
+                "74B",
+                "84"
+              ]
+            },
+            {
+              "date": "2025.05.13",
+              "rate": 100.3,
+              "units": 3,
+              "co_types": [
+                "74B"
+              ]
+            },
+            {
+              "date": "2025.06.19",
+              "rate": 132.0,
+              "units": 2,
+              "co_types": [
+                "74B"
+              ]
+            },
+            {
+              "date": "2025.08.14",
+              "rate": 101.7,
+              "units": 3,
+              "co_types": []
+            },
+            {
+              "date": "2025.09.24",
+              "rate": 90.0,
+              "units": 3,
+              "co_types": [
+                "74B"
+              ]
+            },
+            {
+              "date": "2025.11.04",
+              "rate": 108.0,
+              "units": 2,
+              "co_types": [
+                "84"
+              ]
+            },
+            {
+              "date": "2025.12.16",
+              "rate": 152.0,
+              "units": 2,
+              "co_types": []
+            },
+            {
+              "date": "2026.01.26",
+              "rate": 118.0,
+              "units": 2,
+              "co_types": [
+                "74B"
+              ]
+            },
+            {
+              "date": "2026.02.09",
+              "rate": 116.0,
+              "units": 3,
+              "co_types": []
+            },
+            {
+              "date": "2026.03.05",
+              "rate": 57.8,
+              "units": 4,
+              "co_types": [
+                "74B",
+                "84"
+              ]
+            }
+          ]
+        },
+        "74B": {
+          "appearances": 7,
+          "avg_rate": 45.3,
+          "weighted_rate": 46.6,
+          "recent_avg": 41.7,
+          "trend": "stable",
+          "difficulty": 2,
+          "total_units": 11,
+          "total_applicants": 482,
+          "history": [
+            {
+              "date": "2025.02.25",
+              "rate": 39.0,
+              "units": 1,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2025.04.11",
+              "rate": 42.0,
+              "units": 1,
+              "co_types": [
+                "74A",
+                "84"
+              ]
+            },
+            {
+              "date": "2025.05.13",
+              "rate": 41.0,
+              "units": 2,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2025.06.19",
+              "rate": 70.0,
+              "units": 1,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2025.09.24",
+              "rate": 48.0,
+              "units": 1,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2026.01.26",
+              "rate": 47.0,
+              "units": 3,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2026.03.05",
+              "rate": 30.0,
+              "units": 2,
+              "co_types": [
+                "74A",
+                "84"
+              ]
+            }
+          ]
+        },
+        "84": {
+          "appearances": 3,
+          "avg_rate": 59.3,
+          "weighted_rate": 59.5,
+          "recent_avg": 59.3,
+          "trend": "stable",
+          "difficulty": 3,
+          "total_units": 7,
+          "total_applicants": 412,
+          "history": [
+            {
+              "date": "2025.04.11",
+              "rate": 56.0,
+              "units": 3,
+              "co_types": [
+                "74A",
+                "74B"
+              ]
+            },
+            {
+              "date": "2025.11.04",
+              "rate": 64.5,
+              "units": 2,
+              "co_types": [
+                "74A"
+              ]
+            },
+            {
+              "date": "2026.03.05",
+              "rate": 57.5,
+              "units": 2,
+              "co_types": [
+                "74A",
+                "74B"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "독산역 롯데캐슬": {
+      "total_rounds": 2,
+      "types": {
+        "59A": {
+          "appearances": 2,
+          "avg_rate": 189.0,
+          "weighted_rate": 236.2,
+          "recent_avg": 189.0,
+          "trend": "stable",
+          "difficulty": 10,
+          "total_units": 5,
+          "total_applicants": 723,
+          "history": [
+            {
+              "date": "2024.05.24",
+              "rate": 263.0,
+              "units": 1,
+              "co_types": [
+                "59B",
+                "59C"
+              ]
+            },
+            {
+              "date": "2026.02.20",
+              "rate": 115.0,
+              "units": 4,
+              "co_types": [
+                "59B"
+              ]
+            }
+          ]
+        },
+        "59B": {
+          "appearances": 2,
+          "avg_rate": 105.0,
+          "weighted_rate": 106.0,
+          "recent_avg": 105.0,
+          "trend": "stable",
+          "difficulty": 5,
+          "total_units": 2,
+          "total_applicants": 210,
+          "history": [
+            {
+              "date": "2024.05.24",
+              "rate": 121.0,
+              "units": 1,
+              "co_types": [
+                "59A",
+                "59C"
+              ]
+            },
+            {
+              "date": "2026.02.20",
+              "rate": 89.0,
+              "units": 1,
+              "co_types": [
+                "59A"
+              ]
+            }
+          ]
+        },
+        "59C": {
+          "appearances": 1,
+          "avg_rate": 153.0,
+          "weighted_rate": 153.0,
+          "recent_avg": 153.0,
+          "trend": "stable",
+          "difficulty": 8,
+          "total_units": 1,
+          "total_applicants": 153,
+          "history": [
+            {
+              "date": "2024.05.24",
+              "rate": 153.0,
+              "units": 1,
+              "co_types": [
+                "59A",
+                "59B"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "matches": [
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_date": "2025.09.17",
+      "status_title": "[신동탄 롯데캐슬]'25.09.11(목) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 4,
+          "applicants": 179,
+          "winners": 4,
+          "reserves": 8,
+          "rate": 44.8
+        },
+        {
+          "type": "84A",
+          "units": 3,
+          "applicants": 116,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 38.7
+        },
+        {
+          "type": "84B",
+          "units": 1,
+          "applicants": 26,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 26.0
+        },
+        {
+          "type": "84C",
+          "units": 1,
+          "applicants": 19,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 19.0
+        }
+      ]
+    },
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_date": "2025.11.18",
+      "status_title": "[신동탄 롯데캐슬] '25.11.12(수) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 5,
+          "applicants": 215,
+          "winners": 5,
+          "reserves": 15,
+          "rate": 43.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 22,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 22.0
+        },
+        {
+          "type": "84C",
+          "units": 2,
+          "applicants": 149,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 74.5
+        }
+      ]
+    },
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_date": "2026.03.06",
+      "status_title": "[신동탄 롯데캐슬] '26.02.26(목) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 5,
+          "applicants": 409,
+          "winners": 5,
+          "reserves": 15,
+          "rate": 81.8
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 64,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 64.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.02.25",
+      "status_title": "[동탄2 롯데캐슬] '25.02.13(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 357,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 119.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 39,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 39.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.04.11",
+      "status_title": "[동탄2 롯데캐슬] '25.04.01(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 197,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 65.7
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 42,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 42.0
+        },
+        {
+          "type": "84",
+          "units": 3,
+          "applicants": 168,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 56.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.05.13",
+      "status_title": "[동탄2 롯데캐슬] '25.04.29(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 301,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 100.3
+        },
+        {
+          "type": "74B",
+          "units": 2,
+          "applicants": 82,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 41.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.06.19",
+      "status_title": "[동탄2 롯데캐슬] '25.06.10(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 264,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 132.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 70,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 70.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.08.14",
+      "status_title": "[동탄2 롯데캐슬] '25.08.07(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 305,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 101.7
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.09.24",
+      "status_title": "[동탄2 롯데캐슬] '25.09.15(월) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 270,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 90.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 48,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 48.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.11.04",
+      "status_title": "[동탄2 롯데캐슬] '25.10.29(수) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 216,
+          "winners": 2,
+          "reserves": 8,
+          "rate": 108.0
+        },
+        {
+          "type": "84",
+          "units": 2,
+          "applicants": 129,
+          "winners": 2,
+          "reserves": 8,
+          "rate": 64.5
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2025.12.16",
+      "status_title": "[동탄2 롯데캐슬] '25.12.08(월) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 304,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 152.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2026.01.26",
+      "status_title": "[동탄2 롯데캐슬] '26.01.15(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 236,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 118.0
+        },
+        {
+          "type": "74B",
+          "units": 3,
+          "applicants": 141,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 47.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2026.02.09",
+      "status_title": "[동탄2 롯데캐슬] '26.01.30(금) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 348,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 116.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_date": "2026.03.05",
+      "status_title": "[동탄2 롯데캐슬] '26.02.24(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 4,
+          "applicants": 231,
+          "winners": 4,
+          "reserves": 8,
+          "rate": 57.8
+        },
+        {
+          "type": "74B",
+          "units": 2,
+          "applicants": 60,
+          "winners": 2,
+          "reserves": 4,
+          "rate": 30.0
+        },
+        {
+          "type": "84",
+          "units": 2,
+          "applicants": 115,
+          "winners": 2,
+          "reserves": 4,
+          "rate": 57.5
+        }
+      ]
+    },
+    {
+      "complex": "독산역 롯데캐슬",
+      "status_date": "2024.05.24",
+      "status_title": "[독산역 롯데캐슬]'24.05.17 재임대 모집 공고 접수 현황",
+      "recruit_date": "2021.02.22",
+      "recruit_title": "[독산역 롯데캐슬] 추가 임차인모집 공고(접수마감)",
+      "competition": [
+        {
+          "type": "59A",
+          "units": 1,
+          "applicants": 263,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 263.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 121,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 121.0
+        },
+        {
+          "type": "59C",
+          "units": 1,
+          "applicants": 153,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 153.0
+        }
+      ]
+    },
+    {
+      "complex": "독산역 롯데캐슬",
+      "status_date": "2026.02.20",
+      "status_title": "[독산역 롯데캐슬]'26.02.13 재임대 모집 공고 접수 현황",
+      "recruit_date": "2026.02.13",
+      "recruit_title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 2.20.(금) 10시~15시)",
+      "competition": [
+        {
+          "type": "59A",
+          "units": 4,
+          "applicants": 460,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 115.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 89,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 89.0
+        }
+      ]
+    }
+  ]
+}
