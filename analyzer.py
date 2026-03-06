@@ -1106,7 +1106,6 @@ def run_analysis():
         with open(ANALYSIS_FILE, "w", encoding="utf-8") as f:
             json.dump(prev, f, ensure_ascii=False, indent=2)
 
-        _write_no_change_commit_message()
         print(f"\n분석 유지 v{prev_version} (마지막 확인: {now_kst})")
         return prev
 
@@ -1282,13 +1281,6 @@ def _write_commit_message(result, version, new_matches, analysis,
         f.write(msg)
     print(f"\n커밋 메시지 생성 → {COMMIT_MSG_FILE}")
 
-
-def _write_no_change_commit_message():
-    """변경 없을 때 간단한 커밋 메시지를 생성한다."""
-    now = datetime.now(KST).strftime("%m/%d %H:%M")
-    msg = f"정기 확인 ({now}) — 새 데이터 없음"
-    with open(COMMIT_MSG_FILE, "w", encoding="utf-8") as f:
-        f.write(msg)
 
 
 def _build_changelog(prev, new_version, now_kst, new_ids, new_matches):
