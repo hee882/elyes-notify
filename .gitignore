@@ -3,3 +3,4 @@ seen_posts.json
 __pycache__/
 *.pyc
 .claude/
+.commit_msg

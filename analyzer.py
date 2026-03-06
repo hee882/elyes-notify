@@ -1106,6 +1106,7 @@ def run_analysis():
         with open(ANALYSIS_FILE, "w", encoding="utf-8") as f:
             json.dump(prev, f, ensure_ascii=False, indent=2)
 
+        _write_no_change_commit_message()
         print(f"\n분석 유지 v{prev_version} (마지막 확인: {now_kst})")
         return prev
 
@@ -1207,7 +1208,87 @@ def run_analysis():
         )
         print(f"  [{cname}] {data['total_rounds']}회 | {types}")
 
+    # 커밋 메시지 생성
+    _write_commit_message(result, new_version, new_matches, analysis,
+                          optimization, bt_result, archive)
+
     return result
+
+
+COMMIT_MSG_FILE = os.path.join(BASE_DIR, ".commit_msg")
+
+
+def _write_commit_message(result, version, new_matches, analysis,
+                          optimization, bt_result, archive):
+    """분석 결과 기반 커밋 메시지를 파일로 생성한다."""
+    lines = []
+
+    # 제목
+    if new_matches:
+        complexes = list({m["complex"] for m in new_matches})
+        if len(complexes) <= 2:
+            title = f"v{version} 분석 갱신: {', '.join(complexes)}"
+        else:
+            title = f"v{version} 분석 갱신: {complexes[0]} 외 {len(complexes)-1}개 단지"
+    else:
+        title = f"v{version} 분석 재계산"
+    lines.append(title)
+    lines.append("")
+
+    # 데이터 현황
+    lines.append(f"[데이터] 아카이브 {archive['meta']['total_entries']}건 | 단지 {len(analysis)}개")
+    if new_matches:
+        for m in new_matches[:5]:
+            types_str = ", ".join(
+                f"{c['type']}({c['rate']}:1)" for c in m["competition"]
+            )
+            lines.append(f"  + {m['complex']} {m['status_date']} — {types_str}")
+
+    # 단지별 경쟁률 요약
+    lines.append("")
+    lines.append("[경쟁률]")
+    for cname, cdata in sorted(analysis.items()):
+        types = " | ".join(
+            f"{t} {d['avg_rate']}:1({'↑' if d.get('trend') == 'up' else '↓' if d.get('trend') == 'down' else '→'})"
+            for t, d in sorted(cdata["types"].items(), key=lambda x: x[1]["weighted_rate"])
+        )
+        lines.append(f"  {cname} ({cdata['total_rounds']}회): {types}")
+
+    # 모델 파라미터
+    params = optimization.get("params", {})
+    bt = optimization.get("backtest", {})
+    lines.append("")
+    lines.append(f"[모델] alpha={params.get('alpha', '?')} | "
+                 f"MAPE {bt.get('mape', '?')}% | "
+                 f"적중 {bt.get('pick_accuracy', '?')}% | "
+                 f"CI {bt.get('ci_coverage', '?')}%")
+
+    # 추천
+    rec = optimization.get("recommendation", {})
+    if rec.get("best_type"):
+        lines.append("")
+        lines.append(f"[추천] {rec['best_type']} — "
+                     f"1회 {rec.get('best_prob', '?')}% "
+                     f"(직접 {rec.get('best_prob_direct', '?')}% + "
+                     f"예비 {rec.get('best_prob_reserve', '?')}%)")
+        if rec.get("rounds_to_50pct"):
+            mc = optimization.get("monte_carlo", {})
+            lines.append(f"  50%: {rec['rounds_to_50pct']}회 | "
+                         f"80%: {rec.get('rounds_to_80pct', '-')}회 | "
+                         f"MC평균: {mc.get('avg_rounds_to_win', '?')}회")
+
+    msg = "\n".join(lines)
+    with open(COMMIT_MSG_FILE, "w", encoding="utf-8") as f:
+        f.write(msg)
+    print(f"\n커밋 메시지 생성 → {COMMIT_MSG_FILE}")
+
+
+def _write_no_change_commit_message():
+    """변경 없을 때 간단한 커밋 메시지를 생성한다."""
+    now = datetime.now(KST).strftime("%m/%d %H:%M")
+    msg = f"정기 확인 ({now}) — 새 데이터 없음"
+    with open(COMMIT_MSG_FILE, "w", encoding="utf-8") as f:
+        f.write(msg)
 
 
 def _build_changelog(prev, new_version, now_kst, new_ids, new_matches):

@@ -68,5 +68,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/history.json docs/analysis.json docs/archive.json 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "update data [skip ci]"
-          git push origin main
+          if git diff --cached --quiet; then
+            echo "변경사항 없음 — 커밋 스킵"
+          else
+            if [ -f .commit_msg ]; then
+              git commit -F .commit_msg
+              rm -f .commit_msg
+            else
+              git commit -m "update data [skip ci]"
+            fi
+            git push origin main
+          fi
