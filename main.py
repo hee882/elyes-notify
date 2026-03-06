@@ -15,7 +15,7 @@ load_dotenv()
 BASE_DIR = os.path.dirname(__file__)
 SEEN_FILE = os.path.join(BASE_DIR, "seen_posts.json")
 FAILED_FILE = os.path.join(BASE_DIR, "failed_posts.json")
-HISTORY_FILE = os.path.join(BASE_DIR, "docs", "history.json")  # workflow에서 gh-pages로 복사됨
+HISTORY_FILE = os.path.join(BASE_DIR, "dashboard", "history.json")  # workflow에서 gh-pages로 복사됨
 KST = timezone(timedelta(hours=9))
 
 
