@@ -326,6 +326,51 @@
         }
         .history-item strong { color: #e2e8f0; }
 
+        /* 인사이트 카드 */
+        .insights { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        .insight-card {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 14px 18px;
+            border-left: 3px solid #64748b;
+            font-size: 13px;
+        }
+        .insight-card.opportunity { border-left-color: #22c55e; }
+        .insight-card.warning { border-left-color: #ef4444; }
+        .insight-card.trend { border-left-color: #f59e0b; }
+        .insight-card.info { border-left-color: #3b82f6; }
+        .insight-title { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .insight-card.opportunity .insight-title { color: #4ade80; }
+        .insight-card.warning .insight-title { color: #f87171; }
+        .insight-card.trend .insight-title { color: #fbbf24; }
+        .insight-card.info .insight-title { color: #60a5fa; }
+        .insight-message { color: #e2e8f0; font-weight: 600; }
+        .insight-detail { color: #94a3b8; font-size: 12px; margin-top: 2px; }
+
+        /* 버전 배너 */
+        .version-banner {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .version-tag {
+            background: #3b82f6;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+        .version-info { font-size: 12px; color: #94a3b8; }
+        .version-info strong { color: #e2e8f0; }
+
         /* 푸터 */
         .footer {
             text-align: center;
@@ -588,20 +633,42 @@
         }
 
         function renderAnalysis(data) {
-            const { meta, complexes } = data;
+            const { meta, complexes, insights } = data;
             const wrap = document.getElementById('analysisContent');
             document.getElementById('analysisLoading').style.display = 'none';
             wrap.style.display = 'block';
 
-            // 메타 정보
+            // 버전 배너
+            const lastChecked = meta.last_checked || meta.analyzed_at;
             let html = `
-                <div class="analysis-meta">
-                    <span><strong>분석일</strong> ${meta.analyzed_at}</span>
-                    <span><strong>데이터 기간</strong> ${meta.date_range.from} ~ ${meta.date_range.to}</span>
-                    <span><strong>분석 대상</strong> ${meta.total_posts}건 중 ${meta.matched_results}건 매칭</span>
-                    <span><strong>단지</strong> ${meta.complexes}개</span>
+                <div class="version-banner">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="version-tag">v${meta.version || 1}</span>
+                        <span class="version-info">
+                            <strong>${meta.date_range.from}</strong> ~ <strong>${meta.date_range.to}</strong>
+                            &middot; ${meta.total_posts}건 분석 &middot; ${meta.matched_results}건 매칭
+                        </span>
+                    </div>
+                    <span class="version-info">분석: ${meta.analyzed_at} &middot; 확인: ${lastChecked}</span>
                 </div>
             `;
+
+            // 인사이트
+            if (insights && insights.length > 0) {
+                html += '<div class="section-title">핵심 인사이트</div><div class="insights">';
+                for (const ins of insights) {
+                    html += `
+                        <div class="insight-card ${ins.type}">
+                            <div class="insight-title">${ins.title}</div>
+                            <div class="insight-message">${ins.message}</div>
+                            <div class="insight-detail">${ins.detail}</div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+            }
+
+            html += '<div class="section-title">단지별 경쟁률</div>';
 
             // 단지별 최대 경쟁률 계산 (정렬용)
             const sortedComplexes = Object.entries(complexes).sort((a, b) => {
