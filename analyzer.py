@@ -315,12 +315,18 @@ def analyze_competition(matched_data):
 def generate_insights(analysis):
     """분석 결과에서 핵심 인사이트를 도출한다.
 
-    규칙 기반 분석으로, 각 단지/타입의 특성을 요약한다.
+    규칙 기반 분석:
+    - 경쟁률 순위 (최저/최고)
+    - 추세 감지 (급상승/하락)
+    - 타입 조합 효과 (동시 모집 시 경쟁 분산)
+    - 시즈널리티 (월별 패턴)
+    - 단지간 비교
+    - 최적 신청 전략
     """
     insights = []
 
-    # 전체 타입 경쟁률 순위
     all_types = []
+    all_histories = []  # 전체 이력 (시즈널리티 분석용)
     for cname, cdata in analysis.items():
         for tname, tdata in cdata["types"].items():
             all_types.append({
@@ -333,70 +339,214 @@ def generate_insights(analysis):
                 "appearances": tdata["appearances"],
                 "total_applicants": tdata["total_applicants"],
                 "total_units": tdata["total_units"],
+                "history": tdata.get("history", []),
             })
+            for h in tdata.get("history", []):
+                all_histories.append({
+                    "complex": cname,
+                    "type": tname,
+                    "date": h["date"],
+                    "rate": h["rate"],
+                    "units": h["units"],
+                    "co_types": h["co_types"],
+                })
 
     if not all_types:
         return insights
 
     all_types.sort(key=lambda x: x["weighted_rate"])
 
-    # 가장 경쟁률 낮은 타입 (기회)
+    # 1. 최저/최고 경쟁률
     best = all_types[0]
+    worst = all_types[-1]
     insights.append({
         "type": "opportunity",
         "title": "가장 낮은 경쟁률",
         "message": f"{best['complex']} {best['type']}타입 — 가중 경쟁률 {best['weighted_rate']}:1",
-        "detail": f"평균 {best['avg_rate']}:1, 최근 {best['recent_avg']}:1 (총 {best['appearances']}회 모집)",
+        "detail": f"평균 {best['avg_rate']}:1, 최근 {best['recent_avg']}:1 ({best['appearances']}회 모집)",
     })
-
-    # 가장 경쟁률 높은 타입 (주의)
-    worst = all_types[-1]
     insights.append({
         "type": "warning",
         "title": "가장 높은 경쟁률",
         "message": f"{worst['complex']} {worst['type']}타입 — 가중 경쟁률 {worst['weighted_rate']}:1",
-        "detail": f"평균 {worst['avg_rate']}:1, 최근 {worst['recent_avg']}:1 (총 {worst['appearances']}회 모집)",
+        "detail": f"평균 {worst['avg_rate']}:1, 최근 {worst['recent_avg']}:1 ({worst['appearances']}회 모집)",
     })
 
-    # 급상승 추세 타입
+    # 2. 추세 감지
     rising = [t for t in all_types if t["trend"] == "up" and t["appearances"] >= 2]
     if rising:
         rising.sort(key=lambda x: x["recent_avg"] - x["avg_rate"], reverse=True)
         r = rising[0]
+        delta = round(r["recent_avg"] - r["avg_rate"], 1)
+        pct = round(delta / max(r["avg_rate"], 1) * 100)
         insights.append({
             "type": "trend",
             "title": "경쟁률 급상승",
-            "message": f"{r['complex']} {r['type']}타입 — 최근 {r['recent_avg']}:1 (평균 대비 +{round(r['recent_avg'] - r['avg_rate'], 1)})",
-            "detail": "최근 모집에서 경쟁이 크게 증가하고 있습니다.",
+            "message": f"{r['complex']} {r['type']}타입 — 최근 {r['recent_avg']}:1 (평균 대비 +{delta}, +{pct}%)",
+            "detail": "최근 모집에서 경쟁이 크게 증가하고 있습니다. 신중한 접근이 필요합니다.",
         })
 
-    # 하락 추세 타입 (기회)
     falling = [t for t in all_types if t["trend"] == "down" and t["appearances"] >= 2]
     if falling:
         falling.sort(key=lambda x: x["avg_rate"] - x["recent_avg"], reverse=True)
         f = falling[0]
+        delta = round(f["avg_rate"] - f["recent_avg"], 1)
+        pct = round(delta / max(f["avg_rate"], 1) * 100)
         insights.append({
             "type": "opportunity",
             "title": "경쟁률 하락 추세",
-            "message": f"{f['complex']} {f['type']}타입 — 최근 {f['recent_avg']}:1 (평균 대비 -{round(f['avg_rate'] - f['recent_avg'], 1)})",
-            "detail": "최근 모집에서 경쟁이 완화되고 있어 기회일 수 있습니다.",
+            "message": f"{f['complex']} {f['type']}타입 — 최근 {f['recent_avg']}:1 (평균 대비 -{delta}, -{pct}%)",
+            "detail": "최근 경쟁이 완화되고 있어 신청 적기일 수 있습니다.",
         })
 
-    # 데이터 충분한 단지 vs 부족한 단지
-    for cname, cdata in analysis.items():
-        if cdata["total_rounds"] >= 5:
-            types_str = ", ".join(
-                f"{t}({d['weighted_rate']}:1)"
-                for t, d in sorted(cdata["types"].items(), key=lambda x: x[1]["weighted_rate"])
-            )
-            insights.append({
-                "type": "info",
-                "title": f"{cname} 종합",
-                "message": f"{cdata['total_rounds']}회 모집 데이터 기반 — 신뢰도 높음",
-                "detail": f"타입별: {types_str}",
-            })
+    # 3. 타입 조합 효과 분석
+    _add_combination_insights(insights, all_histories)
+
+    # 4. 시즈널리티 (월별 패턴)
+    _add_seasonality_insights(insights, all_histories)
+
+    # 5. 단지간 비교
+    _add_complex_comparison_insights(insights, analysis)
+
+    # 6. 최적 전략 제안
+    _add_strategy_insights(insights, all_types, all_histories, analysis)
 
     return insights
+
+
+def _add_combination_insights(insights, histories):
+    """동시 모집 타입 조합이 경쟁률에 미치는 영향을 분석한다."""
+    if len(histories) < 4:
+        return
+
+    # 단독 모집 vs 복수 모집 비교
+    solo = [h for h in histories if len(h["co_types"]) == 0]
+    multi = [h for h in histories if len(h["co_types"]) > 0]
+
+    if solo and multi:
+        solo_avg = round(sum(h["rate"] for h in solo) / len(solo), 1)
+        multi_avg = round(sum(h["rate"] for h in multi) / len(multi), 1)
+
+        if solo_avg > multi_avg * 1.2:
+            diff = round(solo_avg - multi_avg, 1)
+            insights.append({
+                "type": "info",
+                "title": "타입 조합 효과",
+                "message": f"단독 모집 시 평균 {solo_avg}:1 vs 복수 모집 시 {multi_avg}:1 (차이 {diff})",
+                "detail": "여러 타입이 동시에 나올 때 경쟁이 분산됩니다. 복수 타입 모집 공고를 노리는 것이 유리합니다.",
+            })
+
+    # 많은 타입이 나올수록 경쟁률 낮아지는 패턴
+    by_co_count = {}
+    for h in histories:
+        n = len(h["co_types"]) + 1  # 본인 포함 총 타입 수
+        by_co_count.setdefault(n, []).append(h["rate"])
+
+    if len(by_co_count) >= 2:
+        sorted_counts = sorted(by_co_count.items())
+        if len(sorted_counts) >= 2:
+            first_avg = sum(sorted_counts[0][1]) / len(sorted_counts[0][1])
+            last_avg = sum(sorted_counts[-1][1]) / len(sorted_counts[-1][1])
+            if first_avg < last_avg * 0.7 and sorted_counts[-1][0] >= 3:
+                insights.append({
+                    "type": "trend",
+                    "title": "타입 수와 경쟁률 관계",
+                    "message": f"{sorted_counts[-1][0]}개 타입 동시 모집 시 평균 {round(last_avg, 1)}:1 → 경쟁 치열",
+                    "detail": f"반면 {sorted_counts[0][0]}개 타입만 나올 때는 {round(first_avg, 1)}:1로 상대적으로 낮습니다.",
+                })
+
+
+def _add_seasonality_insights(insights, histories):
+    """월별 경쟁률 패턴을 분석한다."""
+    if len(histories) < 6:
+        return
+
+    monthly = {}
+    for h in histories:
+        # 날짜 형식: "2025.12.08"
+        parts = h["date"].split(".")
+        if len(parts) >= 2:
+            month = int(parts[1])
+            monthly.setdefault(month, []).append(h["rate"])
+
+    if len(monthly) < 3:
+        return
+
+    month_avgs = {}
+    for m, rates in monthly.items():
+        month_avgs[m] = round(sum(rates) / len(rates), 1)
+
+    # 가장 경쟁률 낮은 달 / 높은 달
+    best_month = min(month_avgs, key=month_avgs.get)
+    worst_month = max(month_avgs, key=month_avgs.get)
+
+    if month_avgs[worst_month] > month_avgs[best_month] * 1.3:
+        insights.append({
+            "type": "info",
+            "title": "월별 경쟁률 패턴",
+            "message": f"{best_month}월이 가장 유리 (평균 {month_avgs[best_month]}:1), {worst_month}월이 가장 치열 ({month_avgs[worst_month]}:1)",
+            "detail": f"월별 편차가 큽니다. {best_month}월 전후 모집 공고를 주시하세요.",
+        })
+
+
+def _add_complex_comparison_insights(insights, analysis):
+    """단지간 평균 경쟁률을 비교한다."""
+    if len(analysis) < 2:
+        return
+
+    complex_avgs = {}
+    for cname, cdata in analysis.items():
+        rates = [d["weighted_rate"] for d in cdata["types"].values()]
+        if rates:
+            complex_avgs[cname] = round(sum(rates) / len(rates), 1)
+
+    if len(complex_avgs) < 2:
+        return
+
+    sorted_complexes = sorted(complex_avgs.items(), key=lambda x: x[1])
+    best_c = sorted_complexes[0]
+    worst_c = sorted_complexes[-1]
+
+    insights.append({
+        "type": "info",
+        "title": "단지간 비교",
+        "message": f"가장 유리: {best_c[0]} (평균 {best_c[1]}:1) / 가장 치열: {worst_c[0]} (평균 {worst_c[1]}:1)",
+        "detail": " > ".join(f"{c[0]}({c[1]}:1)" for c in sorted_complexes),
+    })
+
+
+def _add_strategy_insights(insights, all_types, histories, analysis):
+    """최적 신청 전략을 제안한다."""
+    if len(all_types) < 3:
+        return
+
+    # 전략 1: 당첨 확률이 가장 높은 조합 (낮은 경쟁률 + 하락/안정 추세)
+    good_picks = [
+        t for t in all_types
+        if t["trend"] in ("down", "stable") and t["appearances"] >= 2
+    ]
+    good_picks.sort(key=lambda x: x["weighted_rate"])
+
+    if good_picks:
+        top3 = good_picks[:3]
+        picks_str = ", ".join(f"{t['complex']} {t['type']}({t['weighted_rate']}:1)" for t in top3)
+        insights.append({
+            "type": "opportunity",
+            "title": "추천 신청 전략",
+            "message": f"경쟁률 낮고 안정적인 타입: {picks_str}",
+            "detail": "낮은 경쟁률 + 하락 또는 안정 추세를 종합한 추천입니다. 데이터가 충분할수록 신뢰도가 높습니다.",
+        })
+
+    # 전략 2: 세대수 대비 경쟁률 효율
+    for t in all_types:
+        if t["total_units"] >= 5 and t["weighted_rate"] < 50:
+            insights.append({
+                "type": "opportunity",
+                "title": "세대수 많고 경쟁률 낮음",
+                "message": f"{t['complex']} {t['type']}타입 — 총 {t['total_units']}세대 모집, 경쟁률 {t['weighted_rate']}:1",
+                "detail": "모집 세대수가 많아 당첨 기회가 상대적으로 높습니다.",
+            })
+            break  # 하나만
 
 
 def run_analysis():
