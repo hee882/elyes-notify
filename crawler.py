@@ -89,12 +89,15 @@ def get_latest_posts(count=10):
     posts = []
     for item in items:
         raw_content = item.get("nt_content", "")
+        nt_idx = item.get("nt_idx", "")
+        detail_url = f"{BASE_URL}/post/recruit/detail?i_sNtCode=BHCT&nt_idx={requests.utils.quote(nt_idx)}"
         post = {
             "id": item.get("nt_idx2"),
             "title": parse_title(item.get("nt_title", "")),
             "date": item.get("row_input_date", ""),
             "content_text": parse_html_content(raw_content),
             "image_url": extract_first_image(raw_content),
+            "detail_url": detail_url,
         }
         posts.append(post)
     return posts

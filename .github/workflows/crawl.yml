@@ -28,15 +28,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Restore seen posts cache
+      - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: seen_posts.json
-          key: seen-posts-${{ github.run_id }}
-          restore-keys: seen-posts-
+          path: |
+            seen_posts.json
+            failed_posts.json
+          key: posts-data-${{ github.run_id }}
+          restore-keys: posts-data-
 
       - name: Run crawler & notify
         id: crawl
+        continue-on-error: true
         env:
           KAKAO_REST_API_KEY: ${{ secrets.KAKAO_REST_API_KEY }}
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
@@ -49,6 +52,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           gh secret set KAKAO_REFRESH_TOKEN --body "${{ steps.crawl.outputs.new_refresh_token }}" --repo ${{ github.repository }}
+
+      - name: Alert on token error
+        if: steps.crawl.outputs.token_error == 'true'
+        run: |
+          echo "::warning::카카오 토큰 갱신 실패! refresh_token 재발급이 필요합니다."
+          echo "setup_kakao.py를 실행하여 토큰을 재발급하고 GitHub Secret을 업데이트하세요."
 
       - name: Commit history
         run: |
