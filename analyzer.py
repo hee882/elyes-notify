@@ -19,7 +19,7 @@ from datetime import datetime, timezone, timedelta
 from crawler import fetch_recruit_list, parse_title, parse_html_content
 
 BASE_DIR = os.path.dirname(__file__)
-ANALYSIS_FILE = os.path.join(BASE_DIR, "dashboard", "analysis.json")
+ANALYSIS_FILE = os.path.join(BASE_DIR, "docs", "analysis.json")
 KST = timezone(timedelta(hours=9))
 
 # 단지명 정규화 (동일 단지의 다른 표기 통합)
