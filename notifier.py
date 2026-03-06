@@ -4,20 +4,46 @@ import requests
 MEMO_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send"
 
 
-def send_kakao_message(text, access_token, link_url="https://www.elyes.co.kr/post/recruit"):
-    """카카오톡 '나에게 보내기'로 메시지를 전송한다."""
-    # 카카오 텍스트 메시지 최대 길이
-    if len(text) > 1000:
-        text = text[:995] + "\n..."
+def send_kakao_message(post, access_token):
+    """카카오톡 '나에게 보내기'로 feed 템플릿 메시지를 전송한다."""
+    link_url = "https://www.elyes.co.kr/post/recruit"
 
-    template = {
-        "object_type": "text",
-        "text": text,
+    description = post["content_text"]
+    if len(description) > 200:
+        description = description[:200] + "..."
+
+    content = {
+        "title": post["title"],
+        "description": description,
         "link": {
             "web_url": link_url,
             "mobile_web_url": link_url,
         },
-        "button_title": "모집공고 보기",
+    }
+
+    # 이미지가 있으면 썸네일로 추가
+    if post.get("image_url"):
+        content["image_url"] = post["image_url"]
+        content["image_width"] = 800
+        content["image_height"] = 600
+
+    template = {
+        "object_type": "feed",
+        "content": content,
+        "item_content": {
+            "items": [
+                {"item": "작성일", "item_op": post["date"]},
+            ],
+        },
+        "buttons": [
+            {
+                "title": "모집공고 보기",
+                "link": {
+                    "web_url": link_url,
+                    "mobile_web_url": link_url,
+                },
+            },
+        ],
     }
 
     resp = requests.post(MEMO_URL, headers={
@@ -25,25 +51,8 @@ def send_kakao_message(text, access_token, link_url="https://www.elyes.co.kr/pos
     }, data={
         "template_object": json.dumps(template),
     }, timeout=10)
-    resp.raise_for_status()
+
+    if resp.status_code != 200:
+        raise RuntimeError(f"카카오 전송 실패 ({resp.status_code}): {resp.text}")
+
     return resp.json()
-
-
-def format_post_message(post):
-    """게시글을 카카오톡 메시지 형식으로 변환한다."""
-    title = post["title"]
-    date = post["date"]
-    content = post["content_text"]
-
-    # 본문이 길면 요약
-    if len(content) > 400:
-        content = content[:400] + "\n... (이하 생략)"
-
-    msg = (
-        f"[Elyes 모집공고]\n"
-        f"{title}\n"
-        f"작성일: {date}\n"
-        f"─────────────\n"
-        f"{content}"
-    )
-    return msg

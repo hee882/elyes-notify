@@ -4,7 +4,15 @@ on:
   schedule:
     # 평일(월~금) 오전 10시 KST = UTC 01:00
     - cron: '0 1 * * 1-5'
-  workflow_dispatch: # 수동 실행 가능
+  workflow_dispatch:
+    inputs:
+      fetch_count:
+        description: '가져올 글 수 (기본 10)'
+        required: false
+        default: '10'
+
+permissions:
+  contents: write
 
 jobs:
   notify:
@@ -41,3 +49,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           gh secret set KAKAO_REFRESH_TOKEN --body "${{ steps.crawl.outputs.new_refresh_token }}" --repo ${{ github.repository }}
+
+      - name: Commit history
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/history.json
+          git diff --cached --quiet || git commit -m "update notification history [skip ci]"
+          git push
