@@ -92,9 +92,9 @@
   ],
   "stats": {
     "total_sent": 11,
-    "last_run": "2026-03-06 18:19",
+    "last_run": "2026-03-06 19:27",
     "token_status": "active",
-    "token_refreshed_at": "2026-03-06 18:19",
+    "token_refreshed_at": "2026-03-06 19:27",
     "refresh_token_renewed": false
   }
 }
