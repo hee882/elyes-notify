@@ -65,6 +65,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           cp docs/history.json /tmp/history.json 2>/dev/null || true
           cp docs/index.html /tmp/index.html
+          cp -r docs/assets /tmp/assets 2>/dev/null || true
 
           # gh-pages 브랜치 준비
           if git fetch origin gh-pages 2>/dev/null; then
@@ -76,7 +77,8 @@ jobs:
 
           cp /tmp/index.html index.html
           cp /tmp/history.json history.json 2>/dev/null || echo '{"records":[],"stats":{"total_sent":0,"total_failed":0,"total_retried":0,"last_run":null}}' > history.json
-          git add index.html history.json
+          if [ -d /tmp/assets ]; then mkdir -p assets && cp -r /tmp/assets/* assets/; fi
+          git add index.html history.json assets/ 2>/dev/null || git add index.html history.json
           git diff --cached --quiet || git commit -m "update dashboard [skip ci]"
           git push origin gh-pages
           git checkout main
