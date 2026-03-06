@@ -63,13 +63,18 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # gh-pages 브랜치에 docs/ 내용만 배포 (main 커밋 안 남김)
           cp docs/history.json /tmp/history.json 2>/dev/null || true
-          git fetch origin gh-pages:gh-pages 2>/dev/null || git checkout --orphan gh-pages
-          git checkout gh-pages
-          # index.html은 main에서 복사
-          git checkout main -- docs/index.html
-          cp docs/index.html index.html
+          cp docs/index.html /tmp/index.html
+
+          # gh-pages 브랜치 준비
+          if git fetch origin gh-pages 2>/dev/null; then
+            git checkout -B gh-pages origin/gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf .
+          fi
+
+          cp /tmp/index.html index.html
           cp /tmp/history.json history.json 2>/dev/null || echo '{"records":[],"stats":{"total_sent":0,"total_failed":0,"total_retried":0,"last_run":null}}' > history.json
           git add index.html history.json
           git diff --cached --quiet || git commit -m "update dashboard [skip ci]"
