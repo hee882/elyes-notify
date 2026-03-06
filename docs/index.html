@@ -480,6 +480,44 @@
         .api-result.success { display: block; background: #064e3b; color: #6ee7b7; border: 1px solid #22c55e40; }
         .api-result.error { display: block; background: #7f1d1d; color: #fca5a5; border: 1px solid #ef444440; }
 
+        /* 당첨 계산기 */
+        .calc-section {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .calc-select {
+            width: 100%;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            -webkit-appearance: none;
+        }
+        .calc-type-row {
+            display: grid;
+            grid-template-columns: 60px 100px 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px solid #0f172a;
+        }
+        .calc-input {
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 14px;
+            width: 70px;
+            text-align: center;
+        }
+
         /* 시뮬레이션 섹션 */
         .sim-params {
             background: #1e293b;
@@ -666,7 +704,7 @@
             .header { padding: 24px 0 20px; }
             .stat-card .value { font-size: 24px; }
             .title-cell { max-width: 300px; }
-            .type-row { grid-template-columns: 60px 1fr 70px 40px; gap: 8px; }
+            .type-row { grid-template-columns: 60px 1fr 70px; gap: 8px; }
             .mc-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .rec-main { font-size: 16px; }
         }
@@ -699,7 +737,9 @@
             .complex-header { padding: 12px 14px; }
             .complex-name { font-size: 14px; }
             .complex-body-inner { padding: 0 14px 12px; }
-            .type-row { grid-template-columns: 50px 1fr 60px 36px; gap: 6px; padding: 8px 0; }
+            .type-row { grid-template-columns: 50px 1fr 60px; gap: 6px; padding: 8px 0; }
+            .calc-type-row { grid-template-columns: 50px 90px 1fr; gap: 6px; font-size: 12px; }
+            .calc-input { width: 55px; font-size: 12px; padding: 4px 6px; }
             .type-name { font-size: 12px; }
             .rate-bar-wrap { height: 22px; }
             .analysis-meta { padding: 12px 14px; font-size: 12px; }
@@ -977,6 +1017,7 @@
 
         /* ====== 경쟁률 분석 ====== */
         let analysisLoaded = false;
+        let analysisData = null;
 
         async function loadAnalysis() {
             try {
@@ -1160,6 +1201,7 @@
         }
 
         function renderAnalysis(data) {
+            analysisData = data;
             const { meta, complexes, insights } = data;
             const wrap = document.getElementById('analysisContent');
             document.getElementById('analysisLoading').style.display = 'none';
@@ -1268,7 +1310,18 @@
                 html += '<div class="empty">경쟁률 분석 데이터가 없습니다.</div>';
             }
 
-            // 당첨 확률 시뮬레이션
+            // 당첨 계산기
+            html += '<div class="section-title" style="margin-top:32px;">당첨 계산기</div>';
+            html += `<div class="calc-section">
+                <select class="calc-select" id="calcComplex" onchange="updateCalcTypes()">
+                    <option value="">단지를 선택하세요</option>
+                    ${sortedComplexes.map(([name]) => `<option value="${name}">${name}</option>`).join('')}
+                </select>
+                <div id="calcTypes"></div>
+                <div id="calcResult"></div>
+            </div>`;
+
+            // 시뮬레이션 데이터
             if (data.optimization) {
                 html += renderOptimization(data.optimization);
             }
@@ -1325,6 +1378,93 @@
                 document.getElementById('kRefreshRenewed').className = 'api-stat-value ok';
             }
 
+        }
+
+        /* ====== 당첨 계산기 ====== */
+        function calcWinProb(rate, reserveMul, reserveConv) {
+            reserveMul = reserveMul || 3;
+            reserveConv = reserveConv || 0.3;
+            if (rate <= 1) return { direct: 100, reserve: 0, total: 100 };
+            const pDirect = 1 / rate;
+            const pResSel = Math.min(1, reserveMul / (rate - 1));
+            const pRes = (1 - pDirect) * pResSel * reserveConv;
+            return {
+                direct: +(pDirect * 100).toFixed(2),
+                reserve: +(pRes * 100).toFixed(2),
+                total: +(Math.min(1, pDirect + pRes) * 100).toFixed(2),
+            };
+        }
+
+        function updateCalcTypes() {
+            const cname = document.getElementById('calcComplex').value;
+            const container = document.getElementById('calcTypes');
+            const resultDiv = document.getElementById('calcResult');
+            if (!cname || !analysisData) { container.innerHTML = ''; resultDiv.innerHTML = ''; return; }
+            const cdata = analysisData.complexes[cname];
+            if (!cdata) return;
+
+            let html = '<div style="font-size:12px;color:#64748b;margin-bottom:8px;">모집 세대수를 입력하세요 (0 = 미모집)</div>';
+            for (const [tname, tdata] of Object.entries(cdata.types)) {
+                const hist = tdata.history || [];
+                const avgU = hist.length > 0 ? Math.round(hist.reduce((s, h) => s + h.units, 0) / hist.length) : 1;
+                html += `<div class="calc-type-row">
+                    <span style="font-weight:700;font-size:14px;color:#e2e8f0;">${tname}</span>
+                    <div><input type="number" class="calc-input" data-type="${tname}" value="${avgU}" min="0" max="999" oninput="recalculate()"><span style="font-size:11px;color:#64748b;margin-left:4px;">세대</span></div>
+                    <div id="calcRes-${tname.replace(/[^a-zA-Z0-9]/g,'_')}" style="font-size:13px;color:#94a3b8;"></div>
+                </div>`;
+            }
+            container.innerHTML = html;
+            recalculate();
+        }
+
+        function recalculate() {
+            const cname = document.getElementById('calcComplex').value;
+            if (!cname || !analysisData) return;
+            const cdata = analysisData.complexes[cname];
+            if (!cdata) return;
+
+            const results = [];
+            for (const [tname, tdata] of Object.entries(cdata.types)) {
+                const safeId = tname.replace(/[^a-zA-Z0-9]/g, '_');
+                const input = document.querySelector(`input[data-type="${tname}"]`);
+                if (!input) continue;
+                const units = parseInt(input.value) || 0;
+                const resEl = document.getElementById('calcRes-' + safeId);
+
+                if (units <= 0) {
+                    if (resEl) resEl.innerHTML = '<span style="color:#475569;">미모집</span>';
+                    continue;
+                }
+
+                const hist = tdata.history || [];
+                let rate;
+                if (hist.length > 0) {
+                    const avgApp = hist.reduce((s, h) => s + h.rate * h.units, 0) / hist.length;
+                    rate = Math.max(1, Math.round(avgApp / units * 10) / 10);
+                } else {
+                    rate = tdata.weighted_rate;
+                }
+
+                const prob = calcWinProb(rate);
+                results.push({ type: tname, rate, prob: prob.total, units, direct: prob.direct, reserve: prob.reserve });
+
+                if (resEl) {
+                    const color = prob.total > 5 ? '#4ade80' : prob.total > 2 ? '#fbbf24' : '#f87171';
+                    resEl.innerHTML = `예상 <strong style="color:#e2e8f0;">${rate}:1</strong> → <strong style="color:${color};">${prob.total}%</strong> <span style="font-size:11px;">(직접 ${prob.direct}% + 예비 ${prob.reserve}%)</span>`;
+                }
+            }
+
+            const resultDiv = document.getElementById('calcResult');
+            const active = results.filter(r => r.units > 0);
+            if (active.length === 0) { resultDiv.innerHTML = ''; return; }
+
+            active.sort((a, b) => b.prob - a.prob);
+            const best = active[0];
+            resultDiv.innerHTML = `<div style="background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:14px 18px;margin-top:12px;">
+                <div style="font-size:12px;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:0.5px;">추천 타입</div>
+                <div style="font-size:16px;font-weight:700;color:#fff;margin-top:4px;">${best.type} — ${best.prob}% (${best.rate}:1, ${best.units}세대)</div>
+                ${active.length > 1 ? `<div style="font-size:12px;color:#94a3b8;margin-top:4px;">${active.slice(1).map(r => `${r.type}: ${r.prob}%`).join(' · ')}</div>` : ''}
+            </div>`;
         }
 
         /* ====== 초기화 ====== */
