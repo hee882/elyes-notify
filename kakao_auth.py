@@ -24,15 +24,16 @@ def refresh_access_token(rest_api_key=None, refresh_token=None, client_secret=No
         data["client_secret"] = secret
 
     resp = requests.post(TOKEN_URL, data=data, timeout=10)
-    resp.raise_for_status()
-    data = resp.json()
+    if resp.status_code != 200:
+        raise RuntimeError(f"카카오 토큰 갱신 실패 ({resp.status_code}): {resp.text}")
 
-    if "error" in data:
-        raise RuntimeError(f"카카오 토큰 갱신 실패: {data['error_description']}")
+    result = resp.json()
+    if "error" in result:
+        raise RuntimeError(f"카카오 토큰 갱신 실패: {result['error_description']}")
 
     return {
-        "access_token": data["access_token"],
-        "new_refresh_token": data.get("refresh_token"),  # 갱신된 경우에만 존재
+        "access_token": result["access_token"],
+        "new_refresh_token": result.get("refresh_token"),
     }
 
 
