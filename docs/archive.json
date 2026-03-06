@@ -1,0 +1,449 @@
+{
+  "matches": [
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_id": "21498",
+      "status_date": "2025.09.17",
+      "status_title": "[신동탄 롯데캐슬]'25.09.11(목) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 4,
+          "applicants": 179,
+          "winners": 4,
+          "reserves": 8,
+          "rate": 44.8
+        },
+        {
+          "type": "84A",
+          "units": 3,
+          "applicants": 116,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 38.7
+        },
+        {
+          "type": "84B",
+          "units": 1,
+          "applicants": 26,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 26.0
+        },
+        {
+          "type": "84C",
+          "units": 1,
+          "applicants": 19,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 19.0
+        }
+      ]
+    },
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_id": "22004",
+      "status_date": "2025.11.18",
+      "status_title": "[신동탄 롯데캐슬] '25.11.12(수) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 5,
+          "applicants": 215,
+          "winners": 5,
+          "reserves": 15,
+          "rate": 43.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 22,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 22.0
+        },
+        {
+          "type": "84C",
+          "units": 2,
+          "applicants": 149,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 74.5
+        }
+      ]
+    },
+    {
+      "complex": "신동탄 롯데캐슬",
+      "status_id": "22638",
+      "status_date": "2026.03.06",
+      "status_title": "[신동탄 롯데캐슬] '26.02.26(목) 재임대 모집공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "59A",
+          "units": 5,
+          "applicants": 409,
+          "winners": 5,
+          "reserves": 15,
+          "rate": 81.8
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 64,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 64.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "18966",
+      "status_date": "2025.02.25",
+      "status_title": "[동탄2 롯데캐슬] '25.02.13(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 357,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 119.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 39,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 39.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "19527",
+      "status_date": "2025.04.11",
+      "status_title": "[동탄2 롯데캐슬] '25.04.01(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 197,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 65.7
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 42,
+          "winners": 1,
+          "reserves": 2,
+          "rate": 42.0
+        },
+        {
+          "type": "84",
+          "units": 3,
+          "applicants": 168,
+          "winners": 3,
+          "reserves": 6,
+          "rate": 56.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "20247",
+      "status_date": "2025.05.13",
+      "status_title": "[동탄2 롯데캐슬] '25.04.29(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 301,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 100.3
+        },
+        {
+          "type": "74B",
+          "units": 2,
+          "applicants": 82,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 41.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "20672",
+      "status_date": "2025.06.19",
+      "status_title": "[동탄2 롯데캐슬] '25.06.10(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 264,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 132.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 70,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 70.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "21207",
+      "status_date": "2025.08.14",
+      "status_title": "[동탄2 롯데캐슬] '25.08.07(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 305,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 101.7
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "21565",
+      "status_date": "2025.09.24",
+      "status_title": "[동탄2 롯데캐슬] '25.09.15(월) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 270,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 90.0
+        },
+        {
+          "type": "74B",
+          "units": 1,
+          "applicants": 48,
+          "winners": 1,
+          "reserves": 3,
+          "rate": 48.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "21845",
+      "status_date": "2025.11.04",
+      "status_title": "[동탄2 롯데캐슬] '25.10.29(수) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 216,
+          "winners": 2,
+          "reserves": 8,
+          "rate": 108.0
+        },
+        {
+          "type": "84",
+          "units": 2,
+          "applicants": 129,
+          "winners": 2,
+          "reserves": 8,
+          "rate": 64.5
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "22244",
+      "status_date": "2025.12.16",
+      "status_title": "[동탄2 롯데캐슬] '25.12.08(월) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 304,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 152.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "22478",
+      "status_date": "2026.01.26",
+      "status_title": "[동탄2 롯데캐슬] '26.01.15(목) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 2,
+          "applicants": 236,
+          "winners": 2,
+          "reserves": 6,
+          "rate": 118.0
+        },
+        {
+          "type": "74B",
+          "units": 3,
+          "applicants": 141,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 47.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "22540",
+      "status_date": "2026.02.09",
+      "status_title": "[동탄2 롯데캐슬] '26.01.30(금) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 3,
+          "applicants": 348,
+          "winners": 3,
+          "reserves": 9,
+          "rate": 116.0
+        }
+      ]
+    },
+    {
+      "complex": "동탄2 롯데캐슬",
+      "status_id": "22634",
+      "status_date": "2026.03.05",
+      "status_title": "[동탄2 롯데캐슬] '26.02.24(화) 재임대 모집 공고 접수 현황",
+      "recruit_date": null,
+      "recruit_title": null,
+      "competition": [
+        {
+          "type": "74A",
+          "units": 4,
+          "applicants": 231,
+          "winners": 4,
+          "reserves": 8,
+          "rate": 57.8
+        },
+        {
+          "type": "74B",
+          "units": 2,
+          "applicants": 60,
+          "winners": 2,
+          "reserves": 4,
+          "rate": 30.0
+        },
+        {
+          "type": "84",
+          "units": 2,
+          "applicants": 115,
+          "winners": 2,
+          "reserves": 4,
+          "rate": 57.5
+        }
+      ]
+    },
+    {
+      "complex": "독산역 롯데캐슬",
+      "status_id": "16078",
+      "status_date": "2024.05.24",
+      "status_title": "[독산역 롯데캐슬]'24.05.17 재임대 모집 공고 접수 현황",
+      "recruit_date": "2021.02.22",
+      "recruit_title": "[독산역 롯데캐슬] 추가 임차인모집 공고(접수마감)",
+      "competition": [
+        {
+          "type": "59A",
+          "units": 1,
+          "applicants": 263,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 263.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 121,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 121.0
+        },
+        {
+          "type": "59C",
+          "units": 1,
+          "applicants": 153,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 153.0
+        }
+      ]
+    },
+    {
+      "complex": "독산역 롯데캐슬",
+      "status_id": "22583",
+      "status_date": "2026.02.20",
+      "status_title": "[독산역 롯데캐슬]'26.02.13 재임대 모집 공고 접수 현황",
+      "recruit_date": "2026.02.13",
+      "recruit_title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 2.20.(금) 10시~15시)",
+      "competition": [
+        {
+          "type": "59A",
+          "units": 4,
+          "applicants": 460,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 115.0
+        },
+        {
+          "type": "59B",
+          "units": 1,
+          "applicants": 89,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 89.0
+        }
+      ]
+    }
+  ],
+  "meta": {
+    "created_at": "2026-03-06 17:54",
+    "updated_at": "2026-03-06 17:54",
+    "total_entries": 16
+  }
+}

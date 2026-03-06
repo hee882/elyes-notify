@@ -20,6 +20,7 @@ from crawler import fetch_recruit_list, parse_title, parse_html_content
 
 BASE_DIR = os.path.dirname(__file__)
 ANALYSIS_FILE = os.path.join(BASE_DIR, "docs", "analysis.json")
+ARCHIVE_FILE = os.path.join(BASE_DIR, "docs", "archive.json")
 KST = timezone(timedelta(hours=9))
 
 # 단지명 정규화 (동일 단지의 다른 표기 통합)
@@ -124,6 +125,49 @@ def load_previous_analysis():
         with open(ANALYSIS_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     return None
+
+
+def load_archive():
+    """아카이브(누적 경쟁률 데이터)를 불러온다."""
+    if os.path.exists(ARCHIVE_FILE):
+        with open(ARCHIVE_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"matches": [], "meta": {"created_at": None, "updated_at": None, "total_entries": 0}}
+
+
+def merge_archive(archive, new_matches):
+    """새 매칭 데이터를 아카이브에 병합한다 (status_id 기준 중복 제거).
+
+    Returns:
+        int: 새로 추가된 항목 수
+    """
+    existing_ids = {m["status_id"] for m in archive["matches"]}
+    added = 0
+    for m in new_matches:
+        if m["status_id"] not in existing_ids:
+            archive["matches"].append({
+                "complex": m["complex"],
+                "status_id": m["status_id"],
+                "status_date": m["status_date"],
+                "status_title": m["status_title"],
+                "recruit_date": m.get("recruit_date"),
+                "recruit_title": m.get("recruit_title"),
+                "competition": m["competition"],
+            })
+            existing_ids.add(m["status_id"])
+            added += 1
+    archive["meta"]["total_entries"] = len(archive["matches"])
+    archive["meta"]["updated_at"] = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
+    if not archive["meta"]["created_at"]:
+        archive["meta"]["created_at"] = archive["meta"]["updated_at"]
+    return added
+
+
+def save_archive(archive):
+    """아카이브를 저장한다."""
+    os.makedirs(os.path.dirname(ARCHIVE_FILE), exist_ok=True)
+    with open(ARCHIVE_FILE, "w", encoding="utf-8") as f:
+        json.dump(archive, f, ensure_ascii=False, indent=2)
 
 
 def crawl_all_posts(known_ids=None):
@@ -996,6 +1040,8 @@ def tune_model(matched_data, verbose=True):
 def run_analysis():
     """분석을 실행하고 결과를 저장한다. 이전 결과가 있으면 증분 업데이트."""
     prev = load_previous_analysis()
+    archive = load_archive()
+    print(f"아카이브 로드: {archive['meta']['total_entries']}건 보존 중")
 
     # 이전 분석의 게시글 ID 목록 추출
     known_ids = set()
@@ -1019,6 +1065,12 @@ def run_analysis():
     matched = match_recruit_to_status(posts)
     print(f"  {len(matched)}건 매칭 완료")
 
+    # 아카이브에 새 데이터 병합
+    archived_count = merge_archive(archive, matched)
+    if archived_count:
+        print(f"  아카이브에 {archived_count}건 새로 추가 (총 {archive['meta']['total_entries']}건)")
+    save_archive(archive)
+
     # 새 현황 데이터가 있는지 확인
     prev_match_ids = set()
     if prev and "matches" in prev:
@@ -1033,6 +1085,11 @@ def run_analysis():
         print(f"  총 {len(posts)}건 수집 (전체)")
         all_known_ids = {p["id"] for p in posts} | known_ids
         matched = match_recruit_to_status(posts)
+        # 재크롤링 결과도 아카이브에 병합
+        extra = merge_archive(archive, matched)
+        if extra:
+            print(f"  아카이브에 {extra}건 추가 병합")
+            save_archive(archive)
         new_matches = [m for m in matched if m["status_id"] not in prev_match_ids]
         print(f"  {len(matched)}건 매칭")
 
@@ -1058,21 +1115,22 @@ def run_analysis():
     else:
         new_version = prev_version + 1
 
-    # full 모드이므로 전체 데이터로 분석
-    print("경쟁률 분석 중...")
-    analysis = analyze_competition(matched)
+    # 아카이브 기반 분석 (웹에서 삭제된 데이터도 포함)
+    all_matched = archive["matches"]
+    print(f"경쟁률 분석 중... (아카이브 {len(all_matched)}건 기반)")
+    analysis = analyze_competition(all_matched)
 
     print("인사이트 생성 중...")
     insights = generate_insights(analysis)
 
     # 백테스트 & 파라미터 튜닝
     print("\n백테스트 & 파라미터 튜닝 중...")
-    tuned = tune_model(matched, verbose=True)
+    tuned = tune_model(all_matched, verbose=True)
     best_alpha = tuned["alpha"] if tuned else 0.4
     best_rc = tuned["reserve_conversion"] if tuned else 0.3
 
     # 튜닝된 파라미터로 최종 백테스트 (상세 출력)
-    bt_result = backtest(matched, alpha=best_alpha, reserve_conversion=best_rc, verbose=True)
+    bt_result = backtest(all_matched, alpha=best_alpha, reserve_conversion=best_rc, verbose=True)
 
     print(f"\n당첨 확률 최적화 중... (alpha={best_alpha}, rc={best_rc})")
     optimization = generate_optimization(
