@@ -11,14 +11,14 @@
             background: #0f172a;
             color: #e2e8f0;
             min-height: 100vh;
+            line-height: 1.5;
         }
-        .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+        .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
 
         /* 헤더 */
         .header {
             text-align: center;
-            padding: 32px 0;
-            border-bottom: 1px solid #1e293b;
+            padding: 32px 0 24px;
             margin-bottom: 24px;
         }
         .header h1 {
@@ -27,15 +27,47 @@
             background: linear-gradient(135deg, #60a5fa, #a78bfa);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .header p { color: #94a3b8; margin-top: 8px; font-size: 14px; }
+
+        /* 탭 네비게이션 */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid #334155;
+        }
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: #e2e8f0; background: #334155; }
+        .tab-btn.active {
+            color: #fff;
+            background: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
         /* 통계 카드 */
         .stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
+            gap: 12px;
+            margin-bottom: 24px;
         }
         .stat-card {
             background: #1e293b;
@@ -43,36 +75,65 @@
             padding: 20px;
             text-align: center;
             border: 1px solid #334155;
+            transition: border-color 0.2s;
         }
+        .stat-card:hover { border-color: #475569; }
         .stat-card .value {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: #60a5fa;
             word-break: break-word;
             overflow-wrap: break-word;
         }
         .stat-card .label {
-            font-size: 13px;
+            font-size: 12px;
             color: #94a3b8;
             margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* 테이블 */
+        /* 토큰 상태 */
+        .token-status {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+        }
+        .token-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .token-dot.active { background: #22c55e; box-shadow: 0 0 6px #22c55e80; }
+        .token-dot.error { background: #ef4444; box-shadow: 0 0 6px #ef444480; }
+        .token-dot.unknown { background: #64748b; }
+        .token-info { color: #94a3b8; }
+        .token-info strong { color: #e2e8f0; }
+
+        /* 섹션 */
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .section-title::before {
             content: '';
-            width: 4px;
-            height: 20px;
+            width: 3px;
+            height: 18px;
             background: #60a5fa;
             border-radius: 2px;
         }
+
+        /* 테이블 */
         .table-wrap {
             background: #1e293b;
             border-radius: 12px;
@@ -83,20 +144,22 @@
         table { width: 100%; border-collapse: collapse; min-width: 500px; }
         th {
             background: #0f172a;
-            padding: 12px 16px;
+            padding: 10px 16px;
             text-align: left;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             color: #94a3b8;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
         td {
-            padding: 12px 16px;
-            border-top: 1px solid #334155;
-            font-size: 14px;
+            padding: 10px 16px;
+            border-top: 1px solid #1e293b;
+            font-size: 13px;
         }
         tr:hover td { background: #1a2744; }
+        tr[data-href] { cursor: pointer; }
+        tr[data-href]:hover td { background: #1e3a5f; }
         .title-cell {
             max-width: 400px;
             white-space: nowrap;
@@ -104,170 +167,311 @@
             text-overflow: ellipsis;
         }
 
-        /* 상태 뱃지 */
+        /* 뱃지 */
         .badge {
             display: inline-block;
             padding: 2px 10px;
             border-radius: 9999px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         .badge-sent { background: #065f46; color: #6ee7b7; }
         .badge-failed { background: #7f1d1d; color: #fca5a5; }
         .badge-pending { background: #78350f; color: #fcd34d; }
         .badge-retried { background: #1e3a5f; color: #93c5fd; }
+        .img-icon { color: #60a5fa; font-size: 11px; }
 
-        /* 클릭 가능한 행 */
-        tr[data-href] { cursor: pointer; }
-        tr[data-href]:hover td { background: #1e3a5f; }
-
-        /* 토큰 상태 */
-        .token-status {
-            background: #1e293b;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-        }
-        .token-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .token-dot.active { background: #22c55e; box-shadow: 0 0 6px #22c55e80; }
-        .token-dot.error { background: #ef4444; box-shadow: 0 0 6px #ef444480; }
-        .token-dot.unknown { background: #64748b; }
-        .token-info { color: #94a3b8; }
-        .token-info strong { color: #e2e8f0; }
-
-        /* 이미지 아이콘 */
-        .img-icon { color: #60a5fa; font-size: 12px; }
-
-        /* 로딩 */
-        .loading {
+        /* 로딩 / 빈 상태 */
+        .loading, .empty {
             text-align: center;
             padding: 60px 0;
             color: #64748b;
         }
         .loading .spinner {
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border: 3px solid #334155;
             border-top-color: #60a5fa;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 16px;
+            margin: 0 auto 12px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* 빈 상태 */
-        .empty {
-            text-align: center;
-            padding: 60px 0;
+        /* ====== 경쟁률 분석 탭 ====== */
+        .analysis-meta {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 24px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .analysis-meta strong { color: #e2e8f0; }
+
+        .complex-card {
+            background: #1e293b;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        .complex-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .complex-header:hover { background: #1a2744; }
+        .complex-name { font-size: 15px; font-weight: 600; }
+        .complex-meta-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .complex-rounds {
+            font-size: 11px;
+            color: #94a3b8;
+            background: #334155;
+            padding: 2px 10px;
+            border-radius: 9999px;
+        }
+        .complex-toggle {
             color: #64748b;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+        .complex-card.open .complex-toggle { transform: rotate(180deg); }
+        .complex-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .complex-card.open .complex-body { max-height: 2000px; }
+        .complex-body-inner { padding: 0 20px 16px; }
+
+        .type-row {
+            display: grid;
+            grid-template-columns: 70px 1fr 90px 50px;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 0;
+            border-top: 1px solid #0f172a;
+        }
+        .type-name { font-weight: 700; font-size: 14px; color: #e2e8f0; }
+        .rate-bar-wrap {
+            height: 28px;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+        .rate-bar {
+            height: 100%;
+            border-radius: 8px;
+            min-width: 4px;
+            transition: width 0.6s ease;
+        }
+        .rate-bar.low { background: linear-gradient(90deg, #22c55e, #4ade80); }
+        .rate-bar.mid { background: linear-gradient(90deg, #eab308, #f59e0b); }
+        .rate-bar.high { background: linear-gradient(90deg, #f97316, #ef4444); }
+        .rate-bar.extreme { background: linear-gradient(90deg, #ef4444, #dc2626); }
+        .rate-bar-label {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+        .rate-bar-label.outside { right: auto; left: calc(100% + 8px); color: #94a3b8; text-shadow: none; }
+        .trend-badge { font-size: 12px; font-weight: 700; text-align: center; }
+        .trend-up { color: #f87171; }
+        .trend-down { color: #34d399; }
+        .trend-stable { color: #64748b; }
+        .difficulty { text-align: center; }
+        .diff-dot {
+            display: inline-block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            margin: 0 1px;
         }
 
-        /* 반응형 - 태블릿 */
+        .type-detail {
+            grid-column: 1 / -1;
+            padding: 4px 0 0;
+            font-size: 12px;
+            color: #64748b;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+        }
+
+        .history-item {
+            background: #0f172a;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 11px;
+            color: #94a3b8;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .history-item strong { color: #e2e8f0; }
+
+        /* 푸터 */
+        .footer {
+            text-align: center;
+            padding: 32px 0 16px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        /* ====== 반응형 ====== */
         @media (max-width: 768px) {
             .stats { grid-template-columns: repeat(2, 1fr); }
             .header h1 { font-size: 24px; }
-            .header { padding: 24px 0; }
-            .stat-card .value { font-size: 26px; }
+            .header { padding: 24px 0 20px; }
+            .stat-card .value { font-size: 24px; }
             .title-cell { max-width: 300px; }
+            .type-row { grid-template-columns: 60px 1fr 70px 40px; gap: 8px; }
         }
-
-        /* 반응형 - 모바일 */
         @media (max-width: 480px) {
             .container { padding: 16px 12px; }
-            .header { padding: 16px 0; margin-bottom: 16px; }
+            .header { padding: 16px 0 12px; margin-bottom: 16px; }
             .header h1 { font-size: 20px; }
             .header p { font-size: 12px; }
-            .stats { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+            .tabs { margin-bottom: 20px; }
+            .tab-btn { font-size: 13px; padding: 8px 12px; }
+            .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
             .stat-card { padding: 14px; }
-            .stat-card .value { font-size: 22px; }
-            .stat-card .label { font-size: 12px; }
-            .section-title { font-size: 16px; margin-bottom: 12px; }
-            th { padding: 10px; font-size: 11px; }
-            td { padding: 10px; font-size: 13px; }
+            .stat-card .value { font-size: 20px; }
+            .stat-card .label { font-size: 11px; }
+            .section-title { font-size: 14px; margin-bottom: 10px; }
+            th { padding: 8px 10px; font-size: 10px; }
+            td { padding: 8px 10px; font-size: 12px; }
             .title-cell { max-width: 160px; }
-            .badge { font-size: 11px; padding: 2px 8px; }
+            .badge { font-size: 10px; padding: 2px 8px; }
             .table-wrap { position: relative; }
             .table-wrap::after {
                 content: '';
                 position: absolute;
-                top: 0;
-                right: 0;
-                width: 24px;
-                height: 100%;
+                top: 0; right: 0;
+                width: 20px; height: 100%;
                 background: linear-gradient(to right, transparent, #1e293b);
                 pointer-events: none;
                 border-radius: 0 12px 12px 0;
             }
+            .complex-header { padding: 12px 14px; }
+            .complex-name { font-size: 14px; }
+            .complex-body-inner { padding: 0 14px 12px; }
+            .type-row { grid-template-columns: 50px 1fr 60px 36px; gap: 6px; padding: 8px 0; }
+            .type-name { font-size: 12px; }
+            .rate-bar-wrap { height: 22px; }
+            .analysis-meta { padding: 12px 14px; font-size: 12px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <img src="./assets/elyes.png" alt="Elyes" style="height:40px; margin-bottom:8px;">
+            <img src="./assets/elyes.png" alt="Elyes" style="height:36px; margin-bottom:8px;">
             <h1>Elyes 모집공고 알림</h1>
             <p>평일 오전 10시 자동 실행 | 카카오톡 알림</p>
         </div>
 
-        <div class="stats">
-            <div class="stat-card">
-                <div class="value" id="totalSent">-</div>
-                <div class="label">총 전송</div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="notify">알림 현황</button>
+            <button class="tab-btn" data-tab="analysis">경쟁률 분석</button>
+        </div>
+
+        <!-- ====== 알림 현황 탭 ====== -->
+        <div id="tab-notify" class="tab-panel active">
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="value" id="totalSent">-</div>
+                    <div class="label">전송</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="totalFailed">-</div>
+                    <div class="label">실패</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="totalRetried">-</div>
+                    <div class="label">재전송</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="lastRun">-</div>
+                    <div class="label">마지막 실행</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="value" id="totalFailed">-</div>
-                <div class="label">실패</div>
+
+            <div id="tokenStatus" class="token-status" style="display:none;">
+                <div id="tokenDot" class="token-dot unknown"></div>
+                <div class="token-info" id="tokenInfo">토큰 상태 확인 중...</div>
             </div>
-            <div class="stat-card">
-                <div class="value" id="totalRetried">-</div>
-                <div class="label">재전송</div>
-            </div>
-            <div class="stat-card">
-                <div class="value" id="lastRun">-</div>
-                <div class="label">마지막 실행</div>
+
+            <div class="section-title">알림 이력</div>
+            <div class="table-wrap">
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    데이터 불러오는 중...
+                </div>
+                <table id="historyTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>상태</th>
+                            <th>제목</th>
+                            <th>작성일</th>
+                            <th>알림 시각</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div id="empty" class="empty" style="display:none;">
+                    아직 알림 이력이 없습니다.
+                </div>
             </div>
         </div>
 
-        <div id="tokenStatus" class="token-status" style="display:none;">
-            <div id="tokenDot" class="token-dot unknown"></div>
-            <div class="token-info" id="tokenInfo">토큰 상태 확인 중...</div>
-        </div>
-
-        <div class="section-title">알림 이력</div>
-        <div class="table-wrap">
-            <div id="loading" class="loading">
+        <!-- ====== 경쟁률 분석 탭 ====== -->
+        <div id="tab-analysis" class="tab-panel">
+            <div id="analysisLoading" class="loading">
                 <div class="spinner"></div>
-                데이터 불러오는 중...
+                경쟁률 데이터 불러오는 중...
             </div>
-            <table id="historyTable" style="display:none;">
-                <thead>
-                    <tr>
-                        <th>상태</th>
-                        <th>제목</th>
-                        <th>작성일</th>
-                        <th>알림 시각</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-            <div id="empty" class="empty" style="display:none;">
-                아직 알림 이력이 없습니다.
-            </div>
+            <div id="analysisContent" style="display:none;"></div>
+        </div>
+
+        <div class="footer">
+            데이터 출처: <a href="https://www.elyes.co.kr" target="_blank" style="color:#60a5fa;">elyes.co.kr</a>
         </div>
     </div>
 
     <script>
         const HISTORY_URL = './history.json';
+        const ANALYSIS_URL = './analysis.json';
 
+        /* ====== 탭 전환 ====== */
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+
+                if (btn.dataset.tab === 'analysis' && !analysisLoaded) loadAnalysis();
+            });
+        });
+
+        /* ====== 알림 현황 ====== */
         function badgeHTML(status) {
             const map = {
                 sent: '<span class="badge badge-sent">전송됨</span>',
@@ -283,7 +487,7 @@
                 const resp = await fetch(HISTORY_URL + '?t=' + Date.now());
                 if (!resp.ok) throw new Error('No data');
                 const data = await resp.json();
-                render(data);
+                renderNotify(data);
             } catch (e) {
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('empty').style.display = 'block';
@@ -294,35 +498,31 @@
             const el = document.getElementById('tokenStatus');
             const dot = document.getElementById('tokenDot');
             const info = document.getElementById('tokenInfo');
-
             const status = stats.token_status;
-            if (!status) return; // 이전 데이터는 토큰 정보 없음
+            if (!status) return;
 
             el.style.display = 'flex';
             dot.className = 'token-dot ' + (status === 'active' ? 'active' : 'error');
 
             if (status === 'active') {
                 const renewed = stats.refresh_token_renewed ? ' (refresh_token 갱신됨)' : '';
-                info.innerHTML = `<strong>카카오 API</strong> 정상${renewed} · 마지막 갱신: ${stats.token_refreshed_at || '-'}`;
+                info.innerHTML = `<strong>카카오 API</strong> 정상${renewed} &middot; 마지막 갱신: ${stats.token_refreshed_at || '-'}`;
             } else {
-                const errMsg = stats.token_error ? ` · ${stats.token_error}` : '';
-                info.innerHTML = `<strong>카카오 API</strong> 토큰 오류 — 재발급 필요${errMsg}`;
+                const errMsg = stats.token_error ? ` &middot; ${stats.token_error}` : '';
+                info.innerHTML = `<strong>카카오 API</strong> 토큰 오류 &mdash; 재발급 필요${errMsg}`;
             }
         }
 
-        function render(data) {
+        function renderNotify(data) {
             const { records, stats } = data;
-
             document.getElementById('totalSent').textContent = stats.total_sent || 0;
             document.getElementById('totalFailed').textContent = stats.total_failed || 0;
             document.getElementById('totalRetried').textContent = stats.total_retried || 0;
             document.getElementById('lastRun').textContent = stats.last_run || '-';
-
             renderTokenStatus(stats);
-
             document.getElementById('loading').style.display = 'none';
 
-            if (!records.length) {
+            if (!records || !records.length) {
                 document.getElementById('empty').style.display = 'block';
                 return;
             }
@@ -348,6 +548,139 @@
             });
         }
 
+        /* ====== 경쟁률 분석 ====== */
+        let analysisLoaded = false;
+
+        async function loadAnalysis() {
+            try {
+                const resp = await fetch(ANALYSIS_URL + '?t=' + Date.now());
+                if (!resp.ok) throw new Error('No analysis');
+                const data = await resp.json();
+                renderAnalysis(data);
+                analysisLoaded = true;
+            } catch (e) {
+                document.getElementById('analysisLoading').innerHTML =
+                    '<div style="color:#64748b;">경쟁률 분석 데이터가 아직 없습니다.</div>';
+            }
+        }
+
+        function rateColor(rate) {
+            if (rate < 30) return 'low';
+            if (rate < 70) return 'mid';
+            if (rate < 120) return 'high';
+            return 'extreme';
+        }
+
+        function trendIcon(trend) {
+            if (trend === 'up') return '<span class="trend-badge trend-up">&#9650; 상승</span>';
+            if (trend === 'down') return '<span class="trend-badge trend-down">&#9660; 하락</span>';
+            return '<span class="trend-badge trend-stable">&#8212; 안정</span>';
+        }
+
+        function difficultyDots(level) {
+            const colors = ['#22c55e','#22c55e','#84cc16','#eab308','#eab308','#f97316','#f97316','#ef4444','#ef4444','#dc2626'];
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                const active = i < Math.ceil(level / 2);
+                html += `<span class="diff-dot" style="background:${active ? colors[level-1] || '#64748b' : '#334155'}"></span>`;
+            }
+            return html;
+        }
+
+        function renderAnalysis(data) {
+            const { meta, complexes } = data;
+            const wrap = document.getElementById('analysisContent');
+            document.getElementById('analysisLoading').style.display = 'none';
+            wrap.style.display = 'block';
+
+            // 메타 정보
+            let html = `
+                <div class="analysis-meta">
+                    <span><strong>분석일</strong> ${meta.analyzed_at}</span>
+                    <span><strong>데이터 기간</strong> ${meta.date_range.from} ~ ${meta.date_range.to}</span>
+                    <span><strong>분석 대상</strong> ${meta.total_posts}건 중 ${meta.matched_results}건 매칭</span>
+                    <span><strong>단지</strong> ${meta.complexes}개</span>
+                </div>
+            `;
+
+            // 단지별 최대 경쟁률 계산 (정렬용)
+            const sortedComplexes = Object.entries(complexes).sort((a, b) => {
+                const maxA = Math.max(...Object.values(a[1].types).map(t => t.weighted_rate));
+                const maxB = Math.max(...Object.values(b[1].types).map(t => t.weighted_rate));
+                return maxB - maxA;
+            });
+
+            // 전체 최대 경쟁률 (바 스케일링용)
+            const globalMax = Math.max(
+                ...sortedComplexes.flatMap(([, d]) => Object.values(d.types).map(t => t.weighted_rate)),
+                1
+            );
+
+            for (const [cname, cdata] of sortedComplexes) {
+                const typeEntries = Object.entries(cdata.types).sort((a, b) => b[1].weighted_rate - a[1].weighted_rate);
+                const topRate = typeEntries[0]?.[1].weighted_rate || 0;
+
+                html += `
+                    <div class="complex-card">
+                        <div class="complex-header" onclick="this.parentElement.classList.toggle('open')">
+                            <span class="complex-name">${cname}</span>
+                            <div class="complex-meta-right">
+                                <span class="complex-rounds">${cdata.total_rounds}회 모집</span>
+                                <span class="complex-toggle">&#9660;</span>
+                            </div>
+                        </div>
+                        <div class="complex-body"><div class="complex-body-inner">
+                            <div style="display:grid; grid-template-columns:70px 1fr 90px 50px; gap:12px; padding:4px 0 8px; font-size:11px; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;">
+                                <span>타입</span><span>경쟁률 (가중)</span><span style="text-align:center;">추세</span><span style="text-align:center;">난이도</span>
+                            </div>
+                `;
+
+                for (const [tname, tdata] of typeEntries) {
+                    const barWidth = Math.min(100, (tdata.weighted_rate / globalMax) * 100);
+                    const barClass = rateColor(tdata.weighted_rate);
+                    const labelInside = barWidth > 25;
+
+                    html += `
+                        <div class="type-row">
+                            <div class="type-name">${tname}</div>
+                            <div class="rate-bar-wrap">
+                                <div class="rate-bar ${barClass}" style="width:${barWidth}%"></div>
+                                <span class="rate-bar-label${labelInside ? '' : ' outside'}">${tdata.weighted_rate}:1</span>
+                            </div>
+                            <div>${trendIcon(tdata.trend)}</div>
+                            <div class="difficulty">${difficultyDots(tdata.difficulty)}</div>
+                        </div>
+                        <div class="type-detail" style="grid-column:1/-1; margin-bottom:4px;">
+                            <span>평균 ${tdata.avg_rate}:1</span>
+                            <span>최근 ${tdata.recent_avg}:1</span>
+                            <span>총 ${tdata.total_applicants}명 / ${tdata.total_units}세대</span>
+                            <span>${tdata.appearances}회 출현</span>
+                        </div>
+                    `;
+
+                    // 이력 (최근 5건)
+                    if (tdata.history && tdata.history.length > 0) {
+                        html += '<div style="grid-column:1/-1; display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">';
+                        const recent = tdata.history.slice(-5);
+                        for (const h of recent) {
+                            const coText = h.co_types.length > 0 ? ` + ${h.co_types.join(',')}` : ' (단독)';
+                            html += `<div class="history-item"><strong>${h.rate}:1</strong> ${h.date} (${h.units}세대${coText})</div>`;
+                        }
+                        html += '</div>';
+                    }
+                }
+
+                html += '</div></div></div>';
+            }
+
+            if (sortedComplexes.length === 0) {
+                html += '<div class="empty">경쟁률 분석 데이터가 없습니다.</div>';
+            }
+
+            wrap.innerHTML = html;
+        }
+
+        /* ====== 초기화 ====== */
         loadData();
     </script>
 </body>

@@ -59,11 +59,16 @@ jobs:
           echo "::warning::카카오 토큰 갱신 실패! refresh_token 재발급이 필요합니다."
           echo "setup_kakao.py를 실행하여 토큰을 재발급하고 GitHub Secret을 업데이트하세요."
 
+      - name: Run competition analysis
+        continue-on-error: true
+        run: python analyzer.py
+
       - name: Deploy dashboard to gh-pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           cp dashboard/history.json /tmp/history.json 2>/dev/null || true
+          cp dashboard/analysis.json /tmp/analysis.json 2>/dev/null || true
           cp dashboard/index.html /tmp/index.html
           cp -r dashboard/assets /tmp/assets 2>/dev/null || true
 
@@ -77,8 +82,9 @@ jobs:
 
           cp /tmp/index.html index.html
           cp /tmp/history.json history.json 2>/dev/null || echo '{"records":[],"stats":{"total_sent":0,"total_failed":0,"total_retried":0,"last_run":null}}' > history.json
+          cp /tmp/analysis.json analysis.json 2>/dev/null || true
           if [ -d /tmp/assets ]; then mkdir -p assets && cp -r /tmp/assets/* assets/; fi
-          git add index.html history.json assets/ 2>/dev/null || git add index.html history.json
+          git add index.html history.json analysis.json assets/ 2>/dev/null || git add index.html history.json
           git diff --cached --quiet || git commit -m "update dashboard [skip ci]"
           git push origin gh-pages
           git checkout main
