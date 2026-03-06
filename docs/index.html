@@ -1168,13 +1168,23 @@
                             <span>${tdata.appearances}회</span>
                             ${cand ? `<span>직접 ${cand.win_prob_direct}% + 예비 ${cand.win_prob_reserve}%</span>` : ''}
                             <span>${trendIcon(tdata.trend)}</span>
+                            ${tdata.demand_context ? (() => {
+                                const dc = tdata.demand_context;
+                                const parts = [];
+                                if (dc.solo_avg_rate != null) parts.push(`단독 ${dc.solo_avg_rate}:1(${dc.solo_count}회)`);
+                                if (dc.multi_avg_rate != null) parts.push(`복수 ${dc.multi_avg_rate}:1(${dc.multi_count}회)`);
+                                return parts.length ? `<span style="color:#60a5fa;">수요분산: ${parts.join(' / ')}</span>` : '';
+                            })() : ''}
                         </div>
                     `;
 
                     if (tdata.history && tdata.history.length > 0) {
                         html += '<div style="grid-column:1/-1; display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">';
                         for (const h of tdata.history.slice(-5)) {
-                            html += `<div class="history-item"><strong>${h.rate}:1</strong> ${h.date} (${h.units}세대)</div>`;
+                            const coInfo = h.co_types && h.co_types.length > 0
+                                ? ` <span style="color:#94a3b8;font-size:10px;">+${h.co_types.join(',')}</span>`
+                                : ' <span style="color:#94a3b8;font-size:10px;">단독</span>';
+                            html += `<div class="history-item"><strong>${h.rate}:1</strong> ${h.date} (${h.units}세대)${coInfo}</div>`;
                         }
                         html += '</div>';
                     }

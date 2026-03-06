@@ -277,6 +277,7 @@ def analyze_competition(matched_data):
         comp = entry["competition"]
         total_types = len(comp)
         total_units = sum(c["units"] for c in comp)
+        total_applicants = sum(c["applicants"] for c in comp)
 
         if cname not in complex_stats:
             complex_stats[cname] = {"rounds": 0, "types": {}}
@@ -308,9 +309,11 @@ def analyze_competition(matched_data):
                 "date": entry["status_date"],
                 "rate": c["rate"],
                 "units": c["units"],
+                "applicants": c["applicants"],
                 "co_types": co_types,
                 "total_types_in_round": total_types,
                 "total_units_in_round": total_units,
+                "total_applicants_in_round": total_applicants,
             })
 
     result = {}
@@ -333,18 +336,32 @@ def analyze_competition(matched_data):
             recent_avg = round(sum(recent_rates) / len(recent_rates), 1) if recent_rates else 0
             trend = "up" if recent_avg > avg_rate * 1.1 else ("down" if recent_avg < avg_rate * 0.9 else "stable")
 
+            # 수요 분산 컨텍스트
+            solo_ctxs = [c for c in t["contexts"] if c["total_types_in_round"] == 1]
+            multi_ctxs = [c for c in t["contexts"] if c["total_types_in_round"] > 1]
+
             type_analysis[tname] = {
                 "appearances": t["appearances"],
                 "avg_rate": avg_rate,
                 "weighted_rate": weighted_rate,
                 "recent_avg": recent_avg,
                 "trend": trend,
+                "demand_context": {
+                    "solo_avg_rate": round(sum(c["rate"] for c in solo_ctxs) / len(solo_ctxs), 1) if solo_ctxs else None,
+                    "multi_avg_rate": round(sum(c["rate"] for c in multi_ctxs) / len(multi_ctxs), 1) if multi_ctxs else None,
+                    "solo_count": len(solo_ctxs),
+                    "multi_count": len(multi_ctxs),
+                },
                 "history": [
                     {
                         "date": ctx["date"],
                         "rate": ctx["rate"],
                         "units": ctx["units"],
+                        "applicants": ctx["applicants"],
                         "co_types": ctx["co_types"],
+                        "total_types_in_round": ctx["total_types_in_round"],
+                        "total_units_in_round": ctx["total_units_in_round"],
+                        "total_applicants_in_round": ctx["total_applicants_in_round"],
                     }
                     for ctx in sorted(t["contexts"], key=lambda x: x["date"])
                 ],
@@ -531,6 +548,96 @@ def predict_rate(history, trend="stable", alpha=0.4):
     }
 
 
+def predict_rate_contextual(history, trend="stable", alpha=0.4):
+    """수요 분산을 반영한 경쟁률 예측.
+
+    단지 총수요(진입 수요)를 기준으로 정규화한 뒤 EWMA 예측하고,
+    타입별 수요 분배 비율을 적용하여 최종 경쟁률을 산출한다.
+
+    - solo_equiv_rate = 단지 전체 지원자 / 이 타입 세대수
+      (이 타입만 있었다면 받았을 경쟁률)
+    - demand_factor = 실제 경쟁률 / solo_equiv_rate
+      (수요가 다른 타입으로 분산된 비율, <1이면 분산 효과)
+    """
+    if not history:
+        return None
+
+    sorted_h = sorted(history, key=lambda x: x["date"])
+    n = len(sorted_h)
+
+    # 컨텍스트 데이터 없으면 기본 예측으로 fallback
+    has_context = all(
+        h.get("total_applicants_in_round") is not None
+        for h in sorted_h
+    )
+    if not has_context:
+        return predict_rate(history, trend, alpha)
+
+    if n == 1:
+        h = sorted_h[0]
+        r = h["rate"]
+        se = h["total_applicants_in_round"] / h["units"] if h["units"] > 0 else r
+        df = r / se if se > 0 else 1.0
+        return {
+            "predicted": r,
+            "low": round(max(1, r * 0.5), 1),
+            "high": round(r * 2.0, 1),
+            "std": round(r * 0.5, 1),
+            "confidence": "low",
+            "n_data": 1,
+            "demand_base": round(se, 1),
+            "demand_factor": round(df, 3),
+        }
+
+    # 1. Solo equivalent rate (진입 수요 기준)
+    solo_equivs = []
+    dist_factors = []
+    for h in sorted_h:
+        se = h["total_applicants_in_round"] / h["units"] if h["units"] > 0 else h["rate"]
+        solo_equivs.append(se)
+        df = h["rate"] / se if se > 0 else 1.0
+        dist_factors.append(df)
+
+    # EWMA 가중치
+    weights = [(1 - alpha) ** (n - 1 - i) for i in range(n)]
+    w_sum = sum(weights)
+
+    # 2. 진입 수요(solo equiv) EWMA
+    ewa_solo = sum(r * w for r, w in zip(solo_equivs, weights)) / w_sum
+
+    # 3. 수요 분산 계수 EWMA
+    ewa_dist = sum(d * w for d, w in zip(dist_factors, weights)) / w_sum
+
+    # 4. 최종 예측 = 진입 수요 × 분산 계수
+    predicted = ewa_solo * ewa_dist
+
+    if trend == "up":
+        predicted *= 1.1
+    elif trend == "down":
+        predicted *= 0.9
+
+    # 표준편차 (실제 rate 기준)
+    rates = [h["rate"] for h in sorted_h]
+    ewa_rate = sum(r * w for r, w in zip(rates, weights)) / w_sum
+    var = sum(w * (r - ewa_rate) ** 2 for r, w in zip(rates, weights)) / w_sum
+    std = max(var ** 0.5, predicted * 0.1)
+
+    z = 1.96 * (1 + 3.0 / n)
+    low = max(1, predicted - z * std)
+    high = predicted + z * std
+
+    return {
+        "predicted": round(predicted, 1),
+        "low": round(low, 1),
+        "high": round(high, 1),
+        "std": round(std, 1),
+        "confidence": "high" if n >= 5 else ("medium" if n >= 3 else "low"),
+        "n_data": n,
+        "demand_base": round(ewa_solo, 1),
+        "demand_factor": round(ewa_dist, 3),
+    }
+
+
 def win_probability(rate, reserve_multiplier=3, reserve_conversion=0.3):
     """당첨 확률을 계산한다 (직접 당첨 + 예비번호).
 
@@ -574,13 +681,16 @@ def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3
         for tname, tdata in cdata["types"].items():
             hist = tdata.get("history", [])
             trend = tdata.get("trend", "stable")
-            pred = predict_rate(hist, trend, alpha=alpha)
+            pred = predict_rate_contextual(hist, trend, alpha=alpha)
             if not pred:
                 continue
 
             prob = win_probability(pred["predicted"], reserve_multiplier, reserve_conversion)
             prob_worst = win_probability(pred["high"], reserve_multiplier, reserve_conversion)
             prob_best = win_probability(pred["low"], reserve_multiplier, reserve_conversion)
+
+            # 수요 분산 컨텍스트
+            dc = tdata.get("demand_context", {})
 
             candidates.append({
                 "complex": cname,
@@ -598,6 +708,14 @@ def generate_optimization(analysis, reserve_multiplier=3, reserve_conversion=0.3
                     round(prob_worst["total"] * 100, 2),
                     round(prob_best["total"] * 100, 2),
                 ],
+                "demand_context": {
+                    "demand_base": pred.get("demand_base"),
+                    "demand_factor": pred.get("demand_factor"),
+                    "solo_avg_rate": dc.get("solo_avg_rate"),
+                    "multi_avg_rate": dc.get("multi_avg_rate"),
+                    "solo_count": dc.get("solo_count", 0),
+                    "multi_count": dc.get("multi_count", 0),
+                },
             })
 
     candidates.sort(key=lambda x: x["win_prob"], reverse=True)
@@ -769,7 +887,7 @@ def backtest(matched_data, alpha=0.4, reserve_multiplier=3, reserve_conversion=0
 
             hist = tdata.get("history", [])
             trend = tdata.get("trend", "stable")
-            pred = predict_rate(hist, trend, alpha=alpha)
+            pred = predict_rate_contextual(hist, trend, alpha=alpha)
             if not pred:
                 continue
 

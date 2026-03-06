@@ -1,8 +1,8 @@
 {
   "meta": {
-    "version": 6,
-    "analyzed_at": "2026-03-06 17:31",
-    "last_checked": "2026-03-06 20:17",
+    "version": 1,
+    "analyzed_at": "2026-03-07 00:05",
+    "last_checked": "2026-03-07 00:05",
     "mode": "full",
     "total_posts": 212,
     "new_posts": 212,
@@ -270,58 +270,46 @@
         "date": "2026-03-06 17:31",
         "new_posts": 212,
         "new_matches": 0
+      },
+      {
+        "version": 1,
+        "date": "2026-03-07 00:05",
+        "new_posts": 212,
+        "new_matches": 0
       }
     ]
   },
   "insights": [
     {
       "type": "opportunity",
-      "title": "가장 낮은 경쟁률",
-      "message": "신동탄 롯데캐슬 84B타입 — 가중 경쟁률 26.0:1",
-      "detail": "평균 26.0:1, 최근 26.0:1 (1회 모집)"
+      "title": "신동탄 롯데캐슬 추천 타입",
+      "message": "84B타입 — 경쟁률 26.0:1 (최근 26.0:1)",
+      "detail": "같은 단지 내 59A타입(54.2:1) 대비 28.2 낮음"
     },
     {
-      "type": "warning",
-      "title": "가장 높은 경쟁률",
-      "message": "독산역 롯데캐슬 59A타입 — 가중 경쟁률 236.2:1",
-      "detail": "평균 189.0:1, 최근 189.0:1 (2회 모집)"
+      "type": "opportunity",
+      "title": "동탄2 롯데캐슬 추천 타입",
+      "message": "74B타입 — 경쟁률 46.6:1 (최근 41.7:1)",
+      "detail": "같은 단지 내 74A타입(108.4:1) 대비 61.8 낮음"
+    },
+    {
+      "type": "opportunity",
+      "title": "독산역 롯데캐슬 추천 타입",
+      "message": "59B타입 — 경쟁률 106.0:1 (최근 105.0:1)",
+      "detail": "같은 단지 내 59A타입(236.2:1) 대비 130.2 낮음"
     },
     {
       "type": "info",
       "title": "타입 조합 효과",
       "message": "단독 모집 시 평균 123.2:1 vs 복수 모집 시 76.3:1 (차이 46.9)",
       "detail": "여러 타입이 동시에 나올 때 경쟁이 분산됩니다. 복수 타입 모집 공고를 노리는 것이 유리합니다."
-    },
-    {
-      "type": "info",
-      "title": "월별 경쟁률 패턴",
-      "message": "9월이 가장 유리 (평균 44.4:1), 12월이 가장 치열 (152.0:1)",
-      "detail": "월별 편차가 큽니다. 9월 전후 모집 공고를 주시하세요."
-    },
-    {
-      "type": "info",
-      "title": "단지간 비교",
-      "message": "가장 유리: 신동탄 롯데캐슬 (평균 39.4:1) / 가장 치열: 독산역 롯데캐슬 (평균 165.1:1)",
-      "detail": "신동탄 롯데캐슬(39.4:1) > 동탄2 롯데캐슬(71.5:1) > 독산역 롯데캐슬(165.1:1)"
-    },
-    {
-      "type": "opportunity",
-      "title": "추천 신청 전략",
-      "message": "경쟁률 낮고 안정적인 타입: 신동탄 롯데캐슬 84C(36.2:1), 신동탄 롯데캐슬 59B(41.7:1), 동탄2 롯데캐슬 74B(46.6:1)",
-      "detail": "낮은 경쟁률 + 하락 또는 안정 추세를 종합한 추천입니다. 데이터가 충분할수록 신뢰도가 높습니다."
-    },
-    {
-      "type": "opportunity",
-      "title": "세대수 많고 경쟁률 낮음",
-      "message": "동탄2 롯데캐슬 74B타입 — 총 11세대 모집, 경쟁률 46.6:1",
-      "detail": "모집 세대수가 많아 당첨 기회가 상대적으로 높습니다."
     }
   ],
   "optimization": {
     "params": {
       "reserve_multiplier": 3,
       "reserve_conversion": 0.3,
-      "alpha": 0.15
+      "alpha": 0.7
     },
     "candidates": [
       {
@@ -342,7 +330,15 @@
         "win_prob_range": [
           3.65,
           14.62
-        ]
+        ],
+        "demand_context": {
+          "demand_base": 340.0,
+          "demand_factor": 0.076,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 26.0,
+          "solo_count": 0,
+          "multi_count": 1
+        }
       },
       {
         "complex": "신동탄 롯데캐슬",
@@ -362,147 +358,211 @@
         "win_prob_range": [
           2.45,
           9.79
-        ]
-      },
-      {
-        "complex": "신동탄 롯데캐슬",
-        "type": "59B",
-        "predicted_rate": 44.7,
-        "rate_range": [
-          1,
-          147.3
         ],
-        "rate_std": 20.9,
-        "confidence": "low",
-        "n_data": 2,
-        "trend": "stable",
-        "win_prob": 4.25,
-        "win_prob_direct": 2.24,
-        "win_prob_reserve": 2.01,
-        "win_prob_range": [
-          1.29,
-          100.0
-        ]
+        "demand_context": {
+          "demand_base": 113.3,
+          "demand_factor": 0.341,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 38.7,
+          "solo_count": 0,
+          "multi_count": 1
+        }
       },
       {
         "complex": "동탄2 롯데캐슬",
         "type": "74B",
-        "predicted_rate": 44.7,
+        "predicted_rate": 38.8,
         "rate_range": [
-          11.3,
-          78.1
+          13.5,
+          64.1
         ],
-        "rate_std": 11.9,
+        "rate_std": 9.0,
         "confidence": "high",
         "n_data": 7,
         "trend": "stable",
-        "win_prob": 4.25,
-        "win_prob_direct": 2.24,
-        "win_prob_reserve": 2.01,
+        "win_prob": 4.9,
+        "win_prob_direct": 2.58,
+        "win_prob_reserve": 2.32,
         "win_prob_range": [
-          2.43,
-          16.81
-        ]
+          2.96,
+          14.07
+        ],
+        "demand_context": {
+          "demand_base": 196.9,
+          "demand_factor": 0.197,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 45.3,
+          "solo_count": 0,
+          "multi_count": 7
+        }
       },
       {
         "complex": "신동탄 롯데캐슬",
-        "type": "84C",
-        "predicted_rate": 49.0,
+        "type": "59B",
+        "predicted_rate": 53.1,
         "rate_range": [
           1,
-          184.5
+          139.8
         ],
-        "rate_std": 27.7,
+        "rate_std": 17.7,
         "confidence": "low",
         "n_data": 2,
         "trend": "stable",
-        "win_prob": 3.88,
-        "win_prob_direct": 2.04,
-        "win_prob_reserve": 1.84,
+        "win_prob": 3.58,
+        "win_prob_direct": 1.88,
+        "win_prob_reserve": 1.69,
         "win_prob_range": [
-          1.03,
+          1.36,
           100.0
-        ]
-      },
-      {
-        "complex": "신동탄 롯데캐슬",
-        "type": "59A",
-        "predicted_rate": 58.6,
-        "rate_range": [
-          1,
-          131.2
         ],
-        "rate_std": 18.5,
-        "confidence": "medium",
-        "n_data": 3,
-        "trend": "stable",
-        "win_prob": 3.24,
-        "win_prob_direct": 1.71,
-        "win_prob_reserve": 1.54,
-        "win_prob_range": [
-          1.45,
-          100.0
-        ]
+        "demand_context": {
+          "demand_base": 452.9,
+          "demand_factor": 0.117,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 43.0,
+          "solo_count": 0,
+          "multi_count": 2
+        }
       },
       {
         "complex": "동탄2 롯데캐슬",
         "type": "84",
-        "predicted_rate": 59.4,
+        "predicted_rate": 59.8,
         "rate_range": [
-          36.1,
-          82.7
+          36.3,
+          83.2
         ],
-        "rate_std": 5.9,
+        "rate_std": 6.0,
         "confidence": "medium",
         "n_data": 3,
         "trend": "stable",
-        "win_prob": 3.2,
-        "win_prob_direct": 1.68,
-        "win_prob_reserve": 1.52,
+        "win_prob": 3.18,
+        "win_prob_direct": 1.67,
+        "win_prob_reserve": 1.5,
         "win_prob_range": [
-          2.3,
-          5.26
-        ]
+          2.28,
+          5.23
+        ],
+        "demand_context": {
+          "demand_base": 192.1,
+          "demand_factor": 0.311,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 59.3,
+          "solo_count": 0,
+          "multi_count": 3
+        }
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "59A",
+        "predicted_rate": 70.1,
+        "rate_range": [
+          2.4,
+          137.7
+        ],
+        "rate_std": 17.3,
+        "confidence": "medium",
+        "n_data": 3,
+        "trend": "stable",
+        "win_prob": 2.71,
+        "win_prob_direct": 1.43,
+        "win_prob_reserve": 1.28,
+        "win_prob_range": [
+          1.38,
+          59.17
+        ],
+        "demand_context": {
+          "demand_base": 90.2,
+          "demand_factor": 0.776,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 56.5,
+          "solo_count": 0,
+          "multi_count": 3
+        }
+      },
+      {
+        "complex": "신동탄 롯데캐슬",
+        "type": "84C",
+        "predicted_rate": 70.3,
+        "rate_range": [
+          1,
+          184.9
+        ],
+        "rate_std": 23.4,
+        "confidence": "low",
+        "n_data": 2,
+        "trend": "stable",
+        "win_prob": 2.7,
+        "win_prob_direct": 1.42,
+        "win_prob_reserve": 1.28,
+        "win_prob_range": [
+          1.03,
+          100.0
+        ],
+        "demand_context": {
+          "demand_base": 226.9,
+          "demand_factor": 0.31,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 46.8,
+          "solo_count": 0,
+          "multi_count": 2
+        }
       },
       {
         "complex": "동탄2 롯데캐슬",
         "type": "74A",
-        "predicted_rate": 104.1,
+        "predicted_rate": 74.9,
         "rate_range": [
-          32.7,
-          175.5
+          4.6,
+          145.3
         ],
-        "rate_std": 28.6,
+        "rate_std": 28.2,
         "confidence": "high",
         "n_data": 11,
         "trend": "stable",
-        "win_prob": 1.83,
-        "win_prob_direct": 0.96,
-        "win_prob_reserve": 0.86,
+        "win_prob": 2.54,
+        "win_prob_direct": 1.34,
+        "win_prob_reserve": 1.2,
         "win_prob_range": [
-          1.08,
-          5.81
-        ]
+          1.31,
+          41.3
+        ],
+        "demand_context": {
+          "demand_base": 111.4,
+          "demand_factor": 0.673,
+          "solo_avg_rate": 123.2,
+          "multi_avg_rate": 98.8,
+          "solo_count": 3,
+          "multi_count": 8
+        }
       },
       {
         "complex": "독산역 롯데캐슬",
         "type": "59B",
-        "predicted_rate": 103.7,
+        "predicted_rate": 96.5,
         "rate_range": [
-          25.6,
-          181.8
+          30.5,
+          162.6
         ],
-        "rate_std": 15.9,
+        "rate_std": 13.5,
         "confidence": "low",
         "n_data": 2,
         "trend": "stable",
-        "win_prob": 1.83,
-        "win_prob_direct": 0.96,
-        "win_prob_reserve": 0.87,
+        "win_prob": 1.97,
+        "win_prob_direct": 1.04,
+        "win_prob_reserve": 0.93,
         "win_prob_range": [
-          1.05,
-          7.42
-        ]
+          1.17,
+          6.23
+        ],
+        "demand_context": {
+          "demand_base": 546.2,
+          "demand_factor": 0.177,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 105.0,
+          "solo_count": 0,
+          "multi_count": 2
+        }
       },
       {
         "complex": "독산역 롯데캐슬",
@@ -522,27 +582,43 @@
         "win_prob_range": [
           0.62,
           2.48
-        ]
+        ],
+        "demand_context": {
+          "demand_base": 537.0,
+          "demand_factor": 0.285,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 153.0,
+          "solo_count": 0,
+          "multi_count": 1
+        }
       },
       {
         "complex": "독산역 롯데캐슬",
         "type": "59A",
-        "predicted_rate": 183.0,
+        "predicted_rate": 173.9,
         "rate_range": [
           1,
-          544.4
+          479.4
         ],
-        "rate_std": 73.8,
+        "rate_std": 62.4,
         "confidence": "low",
         "n_data": 2,
         "trend": "stable",
-        "win_prob": 1.04,
-        "win_prob_direct": 0.55,
-        "win_prob_reserve": 0.49,
+        "win_prob": 1.09,
+        "win_prob_direct": 0.57,
+        "win_prob_reserve": 0.52,
         "win_prob_range": [
-          0.35,
+          0.4,
           100.0
-        ]
+        ],
+        "demand_context": {
+          "demand_base": 229.5,
+          "demand_factor": 0.758,
+          "solo_avg_rate": null,
+          "multi_avg_rate": 189.0,
+          "solo_count": 0,
+          "multi_count": 2
+        }
       }
     ],
     "repetition": [
@@ -642,57 +718,57 @@
       },
       {
         "round": 3,
-        "label": "신동탄 롯데캐슬 59B",
-        "this_prob": 4.25,
-        "cumulative_prob": 15.61
+        "label": "동탄2 롯데캐슬 74B",
+        "this_prob": 4.9,
+        "cumulative_prob": 16.18
       },
       {
         "round": 4,
-        "label": "동탄2 롯데캐슬 74B",
-        "this_prob": 4.25,
-        "cumulative_prob": 19.19
+        "label": "신동탄 롯데캐슬 59B",
+        "this_prob": 3.58,
+        "cumulative_prob": 19.18
       },
       {
         "round": 5,
-        "label": "신동탄 롯데캐슬 84C",
-        "this_prob": 3.88,
-        "cumulative_prob": 22.33
+        "label": "동탄2 롯데캐슬 84",
+        "this_prob": 3.18,
+        "cumulative_prob": 21.75
       },
       {
         "round": 6,
         "label": "신동탄 롯데캐슬 59A",
-        "this_prob": 3.24,
-        "cumulative_prob": 24.85
+        "this_prob": 2.71,
+        "cumulative_prob": 23.87
       },
       {
         "round": 7,
-        "label": "동탄2 롯데캐슬 84",
-        "this_prob": 3.2,
-        "cumulative_prob": 27.25
+        "label": "신동탄 롯데캐슬 84C",
+        "this_prob": 2.7,
+        "cumulative_prob": 25.93
       },
       {
         "round": 8,
         "label": "동탄2 롯데캐슬 74A",
-        "this_prob": 1.83,
-        "cumulative_prob": 28.58
+        "this_prob": 2.54,
+        "cumulative_prob": 27.81
       },
       {
         "round": 9,
         "label": "독산역 롯데캐슬 59B",
-        "this_prob": 1.83,
-        "cumulative_prob": 29.89
+        "this_prob": 1.97,
+        "cumulative_prob": 29.23
       },
       {
         "round": 10,
         "label": "독산역 롯데캐슬 59C",
         "this_prob": 1.24,
-        "cumulative_prob": 30.76
+        "cumulative_prob": 30.11
       },
       {
         "round": 11,
         "label": "독산역 롯데캐슬 59A",
-        "this_prob": 1.04,
-        "cumulative_prob": 31.48
+        "this_prob": 1.09,
+        "cumulative_prob": 30.87
       }
     ],
     "monte_carlo": {
@@ -723,18 +799,19 @@
       "mc_median_rounds": 9
     },
     "backtest": {
-      "mape": 34.6,
-      "mae": 27.2,
-      "ci_coverage": 75.0,
+      "mape": 40.2,
+      "mae": 31.1,
+      "ci_coverage": 66.7,
       "pick_accuracy": 90.0,
       "total_predictions": 24,
-      "tuned_alpha": 0.15,
+      "tuned_alpha": 0.7,
       "tuned_reserve_conversion": 0.3
     }
   },
   "complexes": {
     "신동탄 롯데캐슬": {
       "total_rounds": 3,
+      "recommended_type": "84B",
       "types": {
         "59A": {
           "appearances": 3,
@@ -742,36 +819,51 @@
           "weighted_rate": 54.2,
           "recent_avg": 56.5,
           "trend": "stable",
-          "difficulty": 3,
-          "total_units": 14,
-          "total_applicants": 803,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 56.5,
+            "solo_count": 0,
+            "multi_count": 3
+          },
           "history": [
             {
               "date": "2025.09.17",
               "rate": 44.8,
               "units": 4,
+              "applicants": 179,
               "co_types": [
                 "84A",
                 "84B",
                 "84C"
-              ]
+              ],
+              "total_types_in_round": 4,
+              "total_units_in_round": 9,
+              "total_applicants_in_round": 340
             },
             {
               "date": "2025.11.18",
               "rate": 43.0,
               "units": 5,
+              "applicants": 215,
               "co_types": [
                 "59B",
                 "84C"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 386
             },
             {
               "date": "2026.03.06",
               "rate": 81.8,
               "units": 5,
+              "applicants": 409,
               "co_types": [
                 "59B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 6,
+              "total_applicants_in_round": 473
             }
           ]
         },
@@ -781,19 +873,26 @@
           "weighted_rate": 38.7,
           "recent_avg": 38.7,
           "trend": "stable",
-          "difficulty": 2,
-          "total_units": 3,
-          "total_applicants": 116,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 38.7,
+            "solo_count": 0,
+            "multi_count": 1
+          },
           "history": [
             {
               "date": "2025.09.17",
               "rate": 38.7,
               "units": 3,
+              "applicants": 116,
               "co_types": [
                 "59A",
                 "84B",
                 "84C"
-              ]
+              ],
+              "total_types_in_round": 4,
+              "total_units_in_round": 9,
+              "total_applicants_in_round": 340
             }
           ]
         },
@@ -803,19 +902,26 @@
           "weighted_rate": 26.0,
           "recent_avg": 26.0,
           "trend": "stable",
-          "difficulty": 1,
-          "total_units": 1,
-          "total_applicants": 26,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 26.0,
+            "solo_count": 0,
+            "multi_count": 1
+          },
           "history": [
             {
               "date": "2025.09.17",
               "rate": 26.0,
               "units": 1,
+              "applicants": 26,
               "co_types": [
                 "59A",
                 "84A",
                 "84C"
-              ]
+              ],
+              "total_types_in_round": 4,
+              "total_units_in_round": 9,
+              "total_applicants_in_round": 340
             }
           ]
         },
@@ -825,28 +931,39 @@
           "weighted_rate": 36.2,
           "recent_avg": 46.8,
           "trend": "stable",
-          "difficulty": 2,
-          "total_units": 3,
-          "total_applicants": 168,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 46.8,
+            "solo_count": 0,
+            "multi_count": 2
+          },
           "history": [
             {
               "date": "2025.09.17",
               "rate": 19.0,
               "units": 1,
+              "applicants": 19,
               "co_types": [
                 "59A",
                 "84A",
                 "84B"
-              ]
+              ],
+              "total_types_in_round": 4,
+              "total_units_in_round": 9,
+              "total_applicants_in_round": 340
             },
             {
               "date": "2025.11.18",
               "rate": 74.5,
               "units": 2,
+              "applicants": 149,
               "co_types": [
                 "59A",
                 "59B"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 386
             }
           ]
         },
@@ -856,26 +973,37 @@
           "weighted_rate": 41.7,
           "recent_avg": 43.0,
           "trend": "stable",
-          "difficulty": 2,
-          "total_units": 2,
-          "total_applicants": 86,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 43.0,
+            "solo_count": 0,
+            "multi_count": 2
+          },
           "history": [
             {
               "date": "2025.11.18",
               "rate": 22.0,
               "units": 1,
+              "applicants": 22,
               "co_types": [
                 "59A",
                 "84C"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 386
             },
             {
               "date": "2026.03.06",
               "rate": 64.0,
               "units": 1,
+              "applicants": 64,
               "co_types": [
                 "59A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 6,
+              "total_applicants_in_round": 473
             }
           ]
         }
@@ -883,6 +1011,7 @@
     },
     "동탄2 롯데캐슬": {
       "total_rounds": 11,
+      "recommended_type": "74B",
       "types": {
         "74A": {
           "appearances": 11,
@@ -890,93 +1019,140 @@
           "weighted_rate": 108.4,
           "recent_avg": 97.3,
           "trend": "stable",
-          "difficulty": 5,
-          "total_units": 30,
-          "total_applicants": 3029,
+          "demand_context": {
+            "solo_avg_rate": 123.2,
+            "multi_avg_rate": 98.8,
+            "solo_count": 3,
+            "multi_count": 8
+          },
           "history": [
             {
               "date": "2025.02.25",
               "rate": 119.0,
               "units": 3,
+              "applicants": 357,
               "co_types": [
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 396
             },
             {
               "date": "2025.04.11",
               "rate": 65.7,
               "units": 3,
+              "applicants": 197,
               "co_types": [
                 "74B",
                 "84"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 7,
+              "total_applicants_in_round": 407
             },
             {
               "date": "2025.05.13",
               "rate": 100.3,
               "units": 3,
+              "applicants": 301,
               "co_types": [
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 383
             },
             {
               "date": "2025.06.19",
               "rate": 132.0,
               "units": 2,
+              "applicants": 264,
               "co_types": [
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 334
             },
             {
               "date": "2025.08.14",
               "rate": 101.7,
               "units": 3,
-              "co_types": []
+              "applicants": 305,
+              "co_types": [],
+              "total_types_in_round": 1,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 305
             },
             {
               "date": "2025.09.24",
               "rate": 90.0,
               "units": 3,
+              "applicants": 270,
               "co_types": [
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 318
             },
             {
               "date": "2025.11.04",
               "rate": 108.0,
               "units": 2,
+              "applicants": 216,
               "co_types": [
                 "84"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 345
             },
             {
               "date": "2025.12.16",
               "rate": 152.0,
               "units": 2,
-              "co_types": []
+              "applicants": 304,
+              "co_types": [],
+              "total_types_in_round": 1,
+              "total_units_in_round": 2,
+              "total_applicants_in_round": 304
             },
             {
               "date": "2026.01.26",
               "rate": 118.0,
               "units": 2,
+              "applicants": 236,
               "co_types": [
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 377
             },
             {
               "date": "2026.02.09",
               "rate": 116.0,
               "units": 3,
-              "co_types": []
+              "applicants": 348,
+              "co_types": [],
+              "total_types_in_round": 1,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 348
             },
             {
               "date": "2026.03.05",
               "rate": 57.8,
               "units": 4,
+              "applicants": 231,
               "co_types": [
                 "74B",
                 "84"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 406
             }
           ]
         },
@@ -986,67 +1162,98 @@
           "weighted_rate": 46.6,
           "recent_avg": 41.7,
           "trend": "stable",
-          "difficulty": 2,
-          "total_units": 11,
-          "total_applicants": 482,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 45.3,
+            "solo_count": 0,
+            "multi_count": 7
+          },
           "history": [
             {
               "date": "2025.02.25",
               "rate": 39.0,
               "units": 1,
+              "applicants": 39,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 396
             },
             {
               "date": "2025.04.11",
               "rate": 42.0,
               "units": 1,
+              "applicants": 42,
               "co_types": [
                 "74A",
                 "84"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 7,
+              "total_applicants_in_round": 407
             },
             {
               "date": "2025.05.13",
               "rate": 41.0,
               "units": 2,
+              "applicants": 82,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 383
             },
             {
               "date": "2025.06.19",
               "rate": 70.0,
               "units": 1,
+              "applicants": 70,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 334
             },
             {
               "date": "2025.09.24",
               "rate": 48.0,
               "units": 1,
+              "applicants": 48,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 318
             },
             {
               "date": "2026.01.26",
               "rate": 47.0,
               "units": 3,
+              "applicants": 141,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 377
             },
             {
               "date": "2026.03.05",
               "rate": 30.0,
               "units": 2,
+              "applicants": 60,
               "co_types": [
                 "74A",
                 "84"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 406
             }
           ]
         },
@@ -1056,35 +1263,50 @@
           "weighted_rate": 59.5,
           "recent_avg": 59.3,
           "trend": "stable",
-          "difficulty": 3,
-          "total_units": 7,
-          "total_applicants": 412,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 59.3,
+            "solo_count": 0,
+            "multi_count": 3
+          },
           "history": [
             {
               "date": "2025.04.11",
               "rate": 56.0,
               "units": 3,
+              "applicants": 168,
               "co_types": [
                 "74A",
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 7,
+              "total_applicants_in_round": 407
             },
             {
               "date": "2025.11.04",
               "rate": 64.5,
               "units": 2,
+              "applicants": 129,
               "co_types": [
                 "74A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 345
             },
             {
               "date": "2026.03.05",
               "rate": 57.5,
               "units": 2,
+              "applicants": 115,
               "co_types": [
                 "74A",
                 "74B"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 8,
+              "total_applicants_in_round": 406
             }
           ]
         }
@@ -1092,6 +1314,7 @@
     },
     "독산역 롯데캐슬": {
       "total_rounds": 2,
+      "recommended_type": "59B",
       "types": {
         "59A": {
           "appearances": 2,
@@ -1099,26 +1322,37 @@
           "weighted_rate": 236.2,
           "recent_avg": 189.0,
           "trend": "stable",
-          "difficulty": 10,
-          "total_units": 5,
-          "total_applicants": 723,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 189.0,
+            "solo_count": 0,
+            "multi_count": 2
+          },
           "history": [
             {
               "date": "2024.05.24",
               "rate": 263.0,
               "units": 1,
+              "applicants": 263,
               "co_types": [
                 "59B",
                 "59C"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 537
             },
             {
               "date": "2026.02.20",
               "rate": 115.0,
               "units": 4,
+              "applicants": 460,
               "co_types": [
                 "59B"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 549
             }
           ]
         },
@@ -1128,26 +1362,37 @@
           "weighted_rate": 106.0,
           "recent_avg": 105.0,
           "trend": "stable",
-          "difficulty": 5,
-          "total_units": 2,
-          "total_applicants": 210,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 105.0,
+            "solo_count": 0,
+            "multi_count": 2
+          },
           "history": [
             {
               "date": "2024.05.24",
               "rate": 121.0,
               "units": 1,
+              "applicants": 121,
               "co_types": [
                 "59A",
                 "59C"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 537
             },
             {
               "date": "2026.02.20",
               "rate": 89.0,
               "units": 1,
+              "applicants": 89,
               "co_types": [
                 "59A"
-              ]
+              ],
+              "total_types_in_round": 2,
+              "total_units_in_round": 5,
+              "total_applicants_in_round": 549
             }
           ]
         },
@@ -1157,18 +1402,25 @@
           "weighted_rate": 153.0,
           "recent_avg": 153.0,
           "trend": "stable",
-          "difficulty": 8,
-          "total_units": 1,
-          "total_applicants": 153,
+          "demand_context": {
+            "solo_avg_rate": null,
+            "multi_avg_rate": 153.0,
+            "solo_count": 0,
+            "multi_count": 1
+          },
           "history": [
             {
               "date": "2024.05.24",
               "rate": 153.0,
               "units": 1,
+              "applicants": 153,
               "co_types": [
                 "59A",
                 "59B"
-              ]
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 3,
+              "total_applicants_in_round": 537
             }
           ]
         }
