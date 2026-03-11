@@ -1,6 +1,15 @@
 {
   "records": [
     {
+      "id": "22657",
+      "title": "[사송 롯데캐슬] 재임대 모집공고(접수기간 : 26.03.11~26.03.15)",
+      "date": "2026.03.10",
+      "notified_at": "2026-03-11 12:50",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=gron6G43Bv55lURYU5JkAg%3D%3D"
+    },
+    {
       "id": "22649",
       "title": "[어바니엘 염창] 공실세대 모집공고 (접수기간 : 3/6 ~ 3/8)",
       "date": "2026.03.06",
@@ -1918,10 +1927,10 @@
     }
   ],
   "stats": {
-    "total_sent": 213,
-    "last_run": "2026-03-06 20:17",
+    "total_sent": 214,
+    "last_run": "2026-03-11 12:50",
     "token_status": "active",
-    "token_refreshed_at": "2026-03-06 20:17",
+    "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
   }
 }
