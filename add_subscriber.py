@@ -34,8 +34,15 @@ def main():
         
     try:
         # 친구의 일회성 코드로 친구의 리프레시 토큰 발급
-        print(f"\n디버깅: 사용 중인 Redirect URI -> {redirect_uri}")
+        print(f"\n[디버깅 정보]")
+        print(f"  - 요청 REST API 키: {rest_api_key}")
+        print(f"  - 사용 Redirect URI: {redirect_uri}")
         client_secret = os.getenv("KAKAO_CLIENT_SECRET")
+        if client_secret:
+            print(f"  - Client Secret 사용 중 (보안 키 설정됨)")
+        else:
+            print(f"  - Client Secret 사용 안 함 (보안 키 없음)")
+            
         tokens = get_initial_tokens(rest_api_key, redirect_uri, auth_code, client_secret)
         
         refresh_token = tokens["refresh_token"]
