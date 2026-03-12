@@ -10,7 +10,8 @@ def main():
         print("에러: KAKAO_REST_API_KEY가 설정되지 않았습니다.")
         return
 
-    redirect_uri = "http://localhost:3000"
+    # 브라우저(subscribe.html)에서 사용한 것과 동일한 redirect_uri를 사용해야 401 에러가 발생하지 않습니다.
+    redirect_uri = f"https://hee882.github.io/elyes-notify/subscribe.html"
     
     print("=" * 60)
     print("  카카오톡 공지 알림 - 친구용 토큰 추출 도구")

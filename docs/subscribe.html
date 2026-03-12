@@ -138,11 +138,36 @@
                 <div style="text-align:center; padding:10px;">
                     <p style="font-size:18px; font-weight:700; color:#191919; margin-bottom:5px;">인증 성공! 🥳</p>
                     <p style="font-size:13px; color:#555;">아래 코드를 복사해서 친구에게 보내주세요.</p>
-                    <div style="background:white; padding:10px; border-radius:8px; border:1px dashed #CCC; font-family:monospace; font-size:14px; word-break:break-all; margin-top:10px;">
+                    <div id="codeBox" style="background:white; padding:15px; border-radius:12px; border:1px solid #EEE; font-family:monospace; font-size:16px; word-break:break-all; margin-top:10px; position:relative; cursor:pointer; transition: background 0.2s;">
                         ${authCode}
                     </div>
+                    <button id="copyBtn" style="margin-top:15px; background:#333; color:white; border:none; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; width:100%;">
+                        코드 복사하기
+                    </button>
                 </div>
             `;
+
+            const copyToClipboard = () => {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = authCode;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.innerText;
+                btn.innerText = '✅ 복사 완료!';
+                btn.style.background = '#059669';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = '#333';
+                }, 2000);
+            };
+
+            document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+            document.getElementById('codeBox').addEventListener('click', copyToClipboard);
         }
 
         document.getElementById('authBtn').addEventListener('click', () => {
