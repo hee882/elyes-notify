@@ -7,7 +7,8 @@
   3. [내 애플리케이션] > [카카오 로그인] > 활성화
   4. [내 애플리케이션] > [카카오 로그인] > [Redirect URI] 에 http://localhost:3000 추가
   5. [내 애플리케이션] > [동의항목] > [카카오톡 메시지] > talk_message 활성화
-  6. 이 스크립트 실행: python setup_kakao.py
+  6. [내 애플리케이션] > [동의항목] > [카카오 서비스 내 친구 목록] > 이용자 동의 활성화 (선택 사항 → 이용자 동의)
+  7. 이 스크립트 실행: python setup_kakao.py
 """
 import webbrowser
 from kakao_auth import get_initial_tokens
@@ -15,19 +16,20 @@ from kakao_auth import get_initial_tokens
 
 def main():
     print("=" * 50)
-    print("  카카오톡 최초 토큰 발급")
+    print("  카카오톡 최초 토큰 발급 (친구 공지 지원)")
     print("=" * 50)
 
     rest_api_key = input("\nREST API 키를 입력하세요: ").strip()
     client_secret = input("Client Secret (보안 키)를 입력하세요 (없으면 Enter): ").strip() or None
     redirect_uri = "http://localhost:3000"
 
-    # 브라우저에서 카카오 로그인
+    # 브라우저에서 카카오 로그인 (talk_message, friends 권한 포함)
     auth_url = (
         f"https://kauth.kakao.com/oauth/authorize"
         f"?client_id={rest_api_key}"
         f"&redirect_uri={redirect_uri}"
         f"&response_type=code"
+        f"&scope=talk_message,friends"
     )
 
     print(f"\n브라우저에서 카카오 로그인 페이지를 엽니다...")

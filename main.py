@@ -63,7 +63,7 @@ def write_github_output(key, value):
             f.write(f"{key}={value}\n")
 
 
-def retry_failed_posts(access_token, history, now_kst):
+def retry_failed_posts(access_token, friend_access_token, history, now_kst):
     """이전에 실패한 글을 재전송한다."""
     failed = load_failed_posts()
     if not failed:
@@ -73,12 +73,23 @@ def retry_failed_posts(access_token, history, now_kst):
 
     # 재전송 안내 메시지
     titles = "\n".join(f"  - {p['title']}" for p in failed)
-    send_kakao_text(
+    msg = (
         f"[Elyes 알림 복구]\n"
         f"이전에 전송 실패한 글 {len(failed)}건을 재전송합니다.\n\n"
-        f"{titles}",
-        access_token,
+        f"{titles}"
     )
+    
+    # 1) 본인에게 안내
+    if access_token:
+        send_kakao_text(msg, access_token)
+    
+    # 2) 친구에게 안내 (있을 경우만)
+    if friend_access_token:
+        try:
+            send_kakao_text(msg, friend_access_token)
+        except Exception as e:
+            print(f"  친구 재전송 안내 실패: {e}")
+
     time.sleep(1)
 
     seen_ids = load_seen_ids()
@@ -96,7 +107,17 @@ def retry_failed_posts(access_token, history, now_kst):
             "retry": True,
         }
         try:
-            send_kakao_message(post, access_token)
+            # 본인에게 전송
+            if access_token:
+                send_kakao_message(post, access_token)
+            
+            # 친구에게 전송 (있을 경우만)
+            if friend_access_token:
+                try:
+                    send_kakao_message(post, friend_access_token)
+                except Exception as fe:
+                    print(f"  친구에게 재전송 실패: {fe}")
+
             seen_ids.add(post["id"])
             record["status"] = "retried"
             history["stats"]["total_retried"] += 1
@@ -118,54 +139,49 @@ def retry_failed_posts(access_token, history, now_kst):
 def check_and_notify():
     now_kst = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
 
-    # 1) 카카오 토큰 갱신
-    print("카카오 토큰 갱신 중...")
+    # 1) 카카오 토큰 갱신 (본인)
+    print("본인 카카오 토큰 갱신 중...")
+    access_token = None
     try:
         token_data = refresh_access_token()
+        access_token = token_data["access_token"]
+        if token_data["new_refresh_token"]:
+            write_github_output("new_refresh_token", token_data["new_refresh_token"])
+        print("  본인 access_token 갱신 완료")
     except Exception as e:
-        print(f"  토큰 갱신 실패: {e}")
-        print("  → GitHub Actions 로그를 확인하고, 토큰 재발급이 필요할 수 있습니다.")
-        write_github_output("token_error", "true")
-        history = load_history()
-        history["stats"]["last_run"] = now_kst
-        history["stats"]["token_status"] = "error"
-        history["stats"]["token_error"] = str(e)
-        history["stats"]["token_refreshed_at"] = now_kst
-        save_json_file(HISTORY_FILE, history)
+        print(f"  본인 토큰 갱신 실패: {e}")
+
+    # 2) 카카오 토큰 갱신 (친구 - 있을 경우만)
+    friend_access_token = None
+    friend_refresh_token = os.getenv("KAKAO_FRIEND_REFRESH_TOKEN")
+    if friend_refresh_token:
+        print("친구 카카오 토큰 갱신 중...")
+        try:
+            f_token_data = refresh_access_token(refresh_token=friend_refresh_token)
+            friend_access_token = f_token_data["access_token"]
+            if f_token_data["new_refresh_token"]:
+                write_github_output("new_friend_refresh_token", f_token_data["new_refresh_token"])
+            print("  친구 access_token 갱신 완료")
+        except Exception as e:
+            print(f"  친구 토큰 갱신 실패: {e}")
+
+    if not access_token and not friend_access_token:
+        print("전송 가능한 토큰이 없습니다. 종료합니다.")
         return
 
-    access_token = token_data["access_token"]
-    print("  access_token 갱신 완료")
-
-    refresh_renewed = bool(token_data["new_refresh_token"])
-    if refresh_renewed:
-        print("  refresh_token도 갱신됨 → GitHub Secret 업데이트 예정")
-        write_github_output("new_refresh_token", token_data["new_refresh_token"])
-
     history = load_history()
-    prev_token_status = history["stats"].get("token_status")
     history["stats"]["last_run"] = now_kst
-    history["stats"]["token_status"] = "active"
-    history["stats"]["token_refreshed_at"] = now_kst
-    history["stats"]["refresh_token_renewed"] = refresh_renewed
+    
+    # 3) 이전 실패 글 재전송
+    retry_failed_posts(access_token, friend_access_token, history, now_kst)
 
-    # 토큰 상태 변경 감지 (error → active 등)
-    has_changes = prev_token_status != "active" or refresh_renewed
-
-    # 2) 이전 실패 글 재전송
-    record_count = len(history["records"])
-    retry_failed_posts(access_token, history, now_kst)
-    if len(history["records"]) > record_count:
-        has_changes = True
-
-    # 3) 모집공고 크롤링
+    # 4) 모집공고 크롤링
     print("\n모집공고 확인 중...")
     try:
         posts = get_latest_posts(count=10)
     except Exception as e:
         print(f"  크롤링 실패: {e}")
-        if has_changes:
-            save_json_file(HISTORY_FILE, history)
+        save_json_file(HISTORY_FILE, history)
         return
 
     seen_ids = load_seen_ids()
@@ -173,14 +189,13 @@ def check_and_notify():
 
     if not new_posts:
         print("  새 글 없음")
-        if has_changes:
-            save_json_file(HISTORY_FILE, history)
+        save_json_file(HISTORY_FILE, history)
         return
 
     new_posts.reverse()
     print(f"  새 글 {len(new_posts)}건 발견!")
 
-    # 4) 카카오톡 전송
+    # 5) 카카오톡 전송
     failed_posts = load_failed_posts()
 
     for post in new_posts:
@@ -194,7 +209,17 @@ def check_and_notify():
             "detail_url": post.get("detail_url"),
         }
         try:
-            send_kakao_message(post, access_token)
+            # 본인에게 전송
+            if access_token:
+                send_kakao_message(post, access_token)
+            
+            # 친구에게 전송 (있을 경우만)
+            if friend_access_token:
+                try:
+                    send_kakao_message(post, friend_access_token)
+                except Exception as fe:
+                    print(f"  친구 전송 실패 [{post['title']}]: {fe}")
+
             seen_ids.add(post["id"])
             record["status"] = "sent"
             history["stats"]["total_sent"] += 1
