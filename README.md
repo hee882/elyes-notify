@@ -25,19 +25,18 @@
 
 ```
 GitHub Actions (cron)
-  ├─ main.py          크롤링 + 카카오톡 알림
+  ├─ main.py          크롤링 + 카카오톡 알림 (본인 + 친구)
   │   ├─ crawler.py     엘리스 API 스크래핑
-  │   ├─ kakao_auth.py  OAuth 토큰 관리
-  │   └─ notifier.py    카카오톡 메시지 전송
+  │   ├─ kakao_auth.py  OAuth 토큰 관리 (듀얼 토큰)
+  │   └─ notifier.py    카카오톡 메시지 전송 (Talk Memo API)
   │
   ├─ analyzer.py      경쟁률 분석 + 확률 최적화
-  │   ├─ 경쟁률 EWMA 예측 (수요 분산 반영)
-  │   ├─ 당첨 확률 계산 (직접 + 예비번호)
-  │   ├─ 몬테카를로 시뮬레이션
-  │   └─ Walk-forward 백테스트
   │
-  └─ docs/            GitHub Pages 대시보드
-      ├─ index.html     단일 페이지 대시보드
+  ├─ add_subscriber.py 친구용 토큰 추출 도구 (CLI)
+  │
+  └─ docs/            GitHub Pages 대시보드 & 초대장
+      ├─ index.html     실시간 대시보드
+      ├─ subscribe.html 친구용 바이럴 초대장 🚀
       ├─ history.json   알림 이력
       ├─ analysis.json  분석 결과
       └─ archive.json   누적 경쟁률 데이터
