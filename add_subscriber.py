@@ -19,7 +19,7 @@ def main():
     print("   (카톡에 붙여넣으면 예쁜 미리보기 카드가 뜹니다! 🚀)")
     
     # GitHub Pages 주소 안내
-    subscribe_url = f"https://jhyoo.github.io/elyes-notify/subscribe.html?client_id={rest_api_key}"
+    subscribe_url = f"https://hee882.github.io/elyes-notify/subscribe.html?client_id={rest_api_key}"
     
     print(f"\n👉 초대 링크: {subscribe_url}")
     
