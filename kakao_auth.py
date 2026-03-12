@@ -49,12 +49,20 @@ def get_initial_tokens(rest_api_key, redirect_uri, auth_code, client_secret=None
         data["client_secret"] = client_secret
 
     resp = requests.post(TOKEN_URL, data=data, timeout=10)
-    resp.raise_for_status()
+    
+    if resp.status_code != 200:
+        error_msg = f"토큰 발급 실패 ({resp.status_code})"
+        try:
+            err_data = resp.json()
+            if "error_description" in err_data:
+                error_msg += f": {err_data['error_description']} ({err_data.get('error')})"
+            else:
+                error_msg += f": {resp.text}"
+        except:
+            error_msg += f": {resp.text}"
+        raise RuntimeError(error_msg)
+
     data = resp.json()
-
-    if "error" in data:
-        raise RuntimeError(f"토큰 발급 실패: {data['error_description']}")
-
     return {
         "access_token": data["access_token"],
         "refresh_token": data["refresh_token"],
