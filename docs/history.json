@@ -1,6 +1,24 @@
 {
   "records": [
     {
+      "id": "22690",
+      "title": "[하단 롯데캐슬]재임대 모집공고(모집기간:26.03.17~26.03.20)",
+      "date": "2026.03.17",
+      "notified_at": "2026-03-17 09:38",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=J5YpZeBn4I7MGjvrMbMdQw%3D%3D"
+    },
+    {
+      "id": "22688",
+      "title": "[한강 롯데캐슬 22단지]재임대 모집공고 안내(접수기간:26.03.17~26.03.24)",
+      "date": "2026.03.17",
+      "notified_at": "2026-03-17 09:38",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=uB7deAUWAhGDpPL84USu7Q%3D%3D"
+    },
+    {
       "id": "22686",
       "title": "[동탄2 롯데캐슬] 공실세대 계약신청 안내 (접수기간: 26.03.23~26.03.24)",
       "date": "2026.03.16",
@@ -1954,8 +1972,8 @@
     }
   ],
   "stats": {
-    "total_sent": 217,
-    "last_run": "2026-03-16 18:31",
+    "total_sent": 219,
+    "last_run": "2026-03-17 09:38",
     "token_status": "active",
     "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
