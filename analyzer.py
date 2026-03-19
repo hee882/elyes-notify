@@ -24,7 +24,7 @@ ARCHIVE_FILE = os.path.join(BASE_DIR, "docs", "archive.json")
 KST = timezone(timedelta(hours=9))
 
 # 분석 제외 단지 (키워드 포함 시 제외)
-EXCLUDED_COMPLEXES = ["어바니엘"]
+EXCLUDED_COMPLEXES = ["어바니엘", "한강 롯데캐슬 22단지", "하단 롯데캐슬", "용산원효루미니"]
 
 # 단지명 정규화 (동일 단지의 다른 표기 통합)
 COMPLEX_ALIASES = {

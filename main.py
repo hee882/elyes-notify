@@ -18,6 +18,9 @@ FAILED_FILE = os.path.join(BASE_DIR, "failed_posts.json")
 HISTORY_FILE = os.path.join(BASE_DIR, "docs", "history.json")
 KST = timezone(timedelta(hours=9))
 
+# 알림 제외 단지
+EXCLUDED_COMPLEXES = ["어바니엘", "한강 롯데캐슬 22단지", "하단 롯데캐슬", "용산원효루미니"]
+
 
 def load_json_file(path, default=None):
     if os.path.exists(path):
@@ -185,7 +188,10 @@ def check_and_notify():
         return
 
     seen_ids = load_seen_ids()
-    new_posts = [p for p in posts if p["id"] not in seen_ids and "어바니엘" not in p["title"]]
+    new_posts = [
+        p for p in posts 
+        if p["id"] not in seen_ids and not any(ex in p["title"] for ex in EXCLUDED_COMPLEXES)
+    ]
 
     if not new_posts:
         print("  새 글 없음")
