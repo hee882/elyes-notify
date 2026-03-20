@@ -439,11 +439,37 @@
           "rate": 89.0
         }
       ]
+    },
+    {
+      "complex": "독산역 롯데캐슬",
+      "status_id": "22717",
+      "status_date": "2026.03.20",
+      "status_title": "[독산역 롯데캐슬]'26.03.13 재임대 모집 공고 접수 현황",
+      "recruit_date": "2026.03.13",
+      "recruit_title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 3.20.(금) 10시~15시)",
+      "competition": [
+        {
+          "type": "59A",
+          "units": 2,
+          "applicants": 342,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 171.0
+        },
+        {
+          "type": "59B",
+          "units": 2,
+          "applicants": 263,
+          "winners": 0,
+          "reserves": 0,
+          "rate": 131.5
+        }
+      ]
     }
   ],
   "meta": {
     "created_at": "2026-03-06 17:54",
-    "updated_at": "2026-03-20 12:51",
-    "total_entries": 16
+    "updated_at": "2026-03-20 15:25",
+    "total_entries": 17
   }
 }
