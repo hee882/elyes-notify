@@ -1,6 +1,15 @@
 {
   "records": [
     {
+      "id": "23046",
+      "title": "[남영역 롯데캐슬] 공실세대 모집공고 (공고일:'26.06.05)",
+      "date": "2026.06.05",
+      "notified_at": "2026-06-05 13:34",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=EEdrkg34KOvMYuahlgFpyw%3D%3D"
+    },
+    {
       "id": "23042",
       "title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 6.12.(금) 10시~15시)",
       "date": "2026.06.05",
@@ -2206,8 +2215,8 @@
     }
   ],
   "stats": {
-    "total_sent": 245,
-    "last_run": "2026-06-05 10:06",
+    "total_sent": 246,
+    "last_run": "2026-06-05 13:34",
     "token_status": "active",
     "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
