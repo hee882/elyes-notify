@@ -1,6 +1,15 @@
 {
   "records": [
     {
+      "id": "23091",
+      "title": "[문래 롯데캐슬] 재임대 모집공고(공고일 26.06.12)",
+      "date": "2026.06.12",
+      "notified_at": "2026-06-12 19:35",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=TKRdi6LZaQgE/XBZHyoO/A%3D%3D"
+    },
+    {
       "id": "23078",
       "title": "[독산역 롯데캐슬]'26.06.05 재임대 모집 공고 접수 현황",
       "date": "2026.06.12",
@@ -2233,8 +2242,8 @@
     }
   ],
   "stats": {
-    "total_sent": 248,
-    "last_run": "2026-06-12 16:48",
+    "total_sent": 249,
+    "last_run": "2026-06-12 19:35",
     "token_status": "active",
     "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
