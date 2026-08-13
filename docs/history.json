@@ -1,6 +1,15 @@
 {
   "records": [
     {
+      "id": "23337",
+      "title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 8.21.(금) 10시~15시)",
+      "date": "2026.08.13",
+      "notified_at": "2026-08-13 11:18",
+      "status": "sent",
+      "has_image": true,
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=%2BjCPTDL0YJvppXUfaqqn8Q%3D%3D"
+    },
+    {
       "id": "23332",
       "title": "[사송 롯데캐슬] 재임대 모집공고(접수기간 : 26.08.12~26.08.16)",
       "date": "2026.08.12",
@@ -2359,8 +2368,8 @@
     }
   ],
   "stats": {
-    "total_sent": 262,
-    "last_run": "2026-08-12 19:09",
+    "total_sent": 263,
+    "last_run": "2026-08-13 11:18",
     "token_status": "active",
     "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
