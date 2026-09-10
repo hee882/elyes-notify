@@ -122,6 +122,53 @@
         .token-info { color: #94a3b8; }
         .token-info strong { color: #e2e8f0; }
 
+        /* 진행 중인 모집 */
+        .deadline-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .deadline-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-left: 3px solid #3b82f6;
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s, transform 0.1s;
+        }
+        .deadline-card:hover { border-color: #475569; transform: translateX(2px); }
+        .deadline-card.urgent { border-left-color: #ef4444; }
+        .deadline-card.soon { border-left-color: #f59e0b; }
+        .deadline-card.upcoming { border-left-color: #64748b; }
+        .deadline-main { flex: 1; min-width: 0; }
+        .deadline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .deadline-period { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .dday-badge {
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #1e3a8a;
+            color: #93c5fd;
+            white-space: nowrap;
+        }
+        .dday-badge.urgent { background: #7f1d1d; color: #fca5a5; }
+        .dday-badge.soon { background: #78350f; color: #fcd34d; }
+        .dday-badge.upcoming { background: #334155; color: #cbd5e1; }
+
         /* 섹션 */
         .section-title {
             font-size: 16px;
@@ -663,6 +710,10 @@
                 border-radius: 0 12px 12px 0;
             }
             .token-status { padding: 10px 14px; font-size: 12px; }
+            .deadline-card { padding: 12px 14px; gap: 10px; }
+            .deadline-title { font-size: 13px; }
+            .deadline-period { font-size: 11px; }
+            .dday-badge { font-size: 12px; padding: 5px 10px; }
             .complex-header { padding: 12px 14px; min-height: 48px; }
             .complex-name { font-size: 14px; }
             .complex-meta-right { gap: 6px; }
@@ -703,7 +754,7 @@
         <div class="header">
             <img src="./assets/elyes.png" alt="Elyes" style="height:36px; margin-bottom:8px;">
             <h1>Elyes 모집공고 알림</h1>
-            <p>평일 9시/12시/15시/18시 자동 실행 | 카카오톡 알림</p>
+            <p>매일 9시/12시/15시/18시 자동 실행 | 카카오톡 알림 + 마감 리마인더</p>
         </div>
 
         <div class="tabs">
@@ -714,6 +765,11 @@
 
         <!-- ====== 알림 현황 탭 ====== -->
         <div id="tab-notify" class="tab-panel active">
+            <div id="deadlineSection" style="display:none;">
+                <div class="section-title">진행 중인 모집</div>
+                <div class="deadline-list" id="deadlineList"></div>
+            </div>
+
             <div class="stats">
                 <div class="stat-card">
                     <div class="value" id="totalSent">-</div>
@@ -872,6 +928,7 @@
 
     <script>
         const HISTORY_URL = './history.json';
+        const SCHEDULE_URL = './schedule.json';
         const ANALYSIS_URL = './analysis.json';
 
         /* ====== 탭 전환 ====== */
@@ -886,6 +943,64 @@
                 if (btn.dataset.tab === 'kakao' && !kakaoLoaded) loadKakaoStatus();
             });
         });
+
+        /* ====== 진행 중인 모집 (접수기간) ====== */
+        function todayKST() {
+            return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+        }
+
+        function daysBetween(fromISO, toISO) {
+            return Math.round((Date.parse(toISO) - Date.parse(fromISO)) / 86400000);
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str == null ? '' : str;
+            return div.innerHTML;
+        }
+
+        async function loadSchedule() {
+            try {
+                const resp = await fetch(SCHEDULE_URL + '?t=' + Date.now());
+                if (!resp.ok) return;
+                renderDeadlines((await resp.json()).entries || []);
+            } catch (e) { /* 스케줄 파일이 아직 없으면 조용히 넘어간다 */ }
+        }
+
+        function renderDeadlines(entries) {
+            const today = todayKST();
+            const open = entries
+                .filter(e => !e.closed && e.end >= today)
+                .sort((a, b) => (a.end + a.start).localeCompare(b.end + b.start));
+            if (!open.length) return;
+
+            document.getElementById('deadlineList').innerHTML = open.map(e => {
+                const left = daysBetween(today, e.end);
+                let cls, badge;
+                if (e.start > today) {
+                    cls = 'upcoming';
+                    badge = daysBetween(today, e.start) + '일 후 시작';
+                } else if (left === 0) {
+                    cls = 'urgent';
+                    badge = '오늘 마감';
+                } else if (left === 1) {
+                    cls = 'soon';
+                    badge = 'D-1';
+                } else {
+                    cls = '';
+                    badge = 'D-' + left;
+                }
+                const href = e.detail_url || 'https://www.elyes.co.kr/post/recruit';
+                return `<a class="deadline-card ${cls}" href="${href}" target="_blank" rel="noopener">
+                    <div class="deadline-main">
+                        <div class="deadline-title">${escapeHTML(e.title)}</div>
+                        <div class="deadline-period">접수기간 ${e.start} ~ ${e.end}</div>
+                    </div>
+                    <div class="dday-badge ${cls}">${badge}</div>
+                </a>`;
+            }).join('');
+            document.getElementById('deadlineSection').style.display = 'block';
+        }
 
         /* ====== 알림 현황 ====== */
         function badgeHTML(status) {
@@ -1356,6 +1471,7 @@
         }
 
         /* ====== 초기화 ====== */
+        loadSchedule();
         loadData();
     </script>
 </body>

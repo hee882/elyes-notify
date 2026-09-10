@@ -6,6 +6,7 @@ from datetime import datetime, timezone, timedelta
 
 from dotenv import load_dotenv
 
+import schedule as schedule_mod
 from crawler import get_latest_posts
 from kakao_auth import refresh_access_token
 from notifier import send_kakao_message, send_kakao_text
@@ -16,6 +17,7 @@ BASE_DIR = os.path.dirname(__file__)
 SEEN_FILE = os.path.join(BASE_DIR, "seen_posts.json")
 FAILED_FILE = os.path.join(BASE_DIR, "failed_posts.json")
 HISTORY_FILE = os.path.join(BASE_DIR, "docs", "history.json")
+SCHEDULE_FILE = os.path.join(BASE_DIR, "docs", "schedule.json")
 KST = timezone(timedelta(hours=9))
 
 # 알림 제외 단지
@@ -36,7 +38,24 @@ def save_json_file(path, data):
 
 
 def load_seen_ids():
-    return set(load_json_file(SEEN_FILE, []))
+    """이미 알림을 보낸 글 ID를 불러온다.
+
+    seen_posts.json은 GitHub Actions 캐시에만 존재해 유실될 수 있다.
+    캐시가 비었을 때 최신 글 전체를 재발송하지 않도록,
+    저장소에 커밋되는 history.json을 폴백으로 사용한다.
+    """
+    seen = set(load_json_file(SEEN_FILE, []))
+    if seen:
+        return seen
+
+    history = load_json_file(HISTORY_FILE, {})
+    recovered = {
+        r["id"] for r in history.get("records", [])
+        if r.get("id") and r.get("status") in ("sent", "retried")
+    }
+    if recovered:
+        print(f"  seen_posts 캐시 없음 → 알림 이력에서 {len(recovered)}건 복구")
+    return recovered
 
 
 def save_seen_ids(seen_ids):
@@ -48,6 +67,11 @@ def load_history():
         "records": [],
         "stats": {"total_sent": 0, "total_failed": 0, "total_retried": 0, "last_run": None},
     })
+
+
+def load_schedule():
+    """접수기간 스케줄을 불러온다."""
+    return load_json_file(SCHEDULE_FILE, schedule_mod.empty_schedule())
 
 
 def load_failed_posts():
@@ -139,6 +163,48 @@ def retry_failed_posts(access_token, friend_access_token, history, now_kst):
     save_failed_posts(still_failed)
 
 
+def send_deadline_reminders(posts, tokens, today=None):
+    """접수기간을 추적하고 접수 시작 / 마감 D-1 / 마감 당일 리마인더를 보낸다.
+
+    Args:
+        tokens: 전송 대상 access_token 목록 (본인, 친구)
+
+    Returns:
+        bool: 스케줄 파일이 변경되었는지 여부
+    """
+    today = today or datetime.now(KST).date()
+    tokens = [t for t in tokens if t]
+    sched = load_schedule()
+    before = json.dumps(sched, ensure_ascii=False, sort_keys=True)
+
+    added = schedule_mod.update_schedule(
+        sched, posts, today=today, excluded=EXCLUDED_COMPLEXES,
+    )
+    if added:
+        print(f"  접수기간 추적: 신규 {len(added)}건")
+
+    for entry, kind, label in schedule_mod.due_reminders(sched, today=today):
+        message = schedule_mod.format_reminder(entry, kind, label)
+        delivered = False
+        for i, token in enumerate(tokens):
+            try:
+                send_kakao_text(message, token)
+                delivered = True
+                time.sleep(1)
+            except Exception as e:
+                who = "본인" if i == 0 else "친구"
+                print(f"  {who} 리마인더 실패 [{entry['title']}]: {e}")
+        if delivered:
+            entry["reminded"].append(kind)
+            print(f"  리마인더 전송({kind}): {entry['title']}")
+
+    after = json.dumps(sched, ensure_ascii=False, sort_keys=True)
+    if before != after:
+        save_json_file(SCHEDULE_FILE, sched)
+        return True
+    return False
+
+
 def check_and_notify():
     now_kst = datetime.now(KST).strftime("%Y-%m-%d %H:%M")
 
@@ -187,6 +253,10 @@ def check_and_notify():
         save_json_file(HISTORY_FILE, history)
         return
 
+    # 5) 접수기간 추적 + 마감 리마인더
+    print("\n접수기간 확인 중...")
+    send_deadline_reminders(posts, [access_token, friend_access_token])
+
     seen_ids = load_seen_ids()
     new_posts = [
         p for p in posts 
@@ -201,7 +271,7 @@ def check_and_notify():
     new_posts.reverse()
     print(f"  새 글 {len(new_posts)}건 발견!")
 
-    # 5) 카카오톡 전송
+    # 6) 카카오톡 전송
     failed_posts = load_failed_posts()
 
     for post in new_posts:

@@ -4,3 +4,9 @@ __pycache__/
 *.pyc
 .claude/
 .commit_msg
+
+# bkit 플러그인 상태
+.bkit/
+
+# pytest
+.pytest_cache/
