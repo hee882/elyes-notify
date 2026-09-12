@@ -38,7 +38,9 @@
       "start": "2026-09-09",
       "end": "2026-09-13",
       "closed": false,
-      "reminded": []
+      "reminded": [
+        "d1"
+      ]
     }
   ],
   "meta": {
