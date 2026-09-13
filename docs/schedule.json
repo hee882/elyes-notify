@@ -39,7 +39,8 @@
       "end": "2026-09-13",
       "closed": false,
       "reminded": [
-        "d1"
+        "d1",
+        "d0"
       ]
     }
   ],
