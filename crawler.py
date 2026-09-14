@@ -39,8 +39,11 @@ def parse_html_content(raw_html):
     decoded = html.unescape(html.unescape(raw_html))
     soup = BeautifulSoup(decoded, "html.parser")
 
-    # 테이블을 정렬된 텍스트로 변환
-    for table in soup.find_all("table"):
+    table_texts = {}
+    # 내부 테이블이 없는 진짜 데이터 테이블만 추출 (레이아웃용 중첩 테이블 방지)
+    valid_tables = [t for t in soup.find_all("table") if not t.find("table")]
+    
+    for tbl_idx, table in enumerate(valid_tables):
         parsed_rows = []
         for tr in table.find_all("tr"):
             cells = [td.get_text(strip=True) for td in tr.find_all(["td", "th"])]
@@ -71,9 +74,16 @@ def parse_html_content(raw_html):
             if ri == 0:
                 lines.append("-+-".join("-" * w for w in widths))
 
-        table.replace_with(BeautifulSoup("\n".join(lines) + "\n", "html.parser"))
+        marker = f"__TABLE_{tbl_idx}__"
+        table_texts[marker] = "\n" + "\n".join(lines) + "\n"
+        table.replace_with(marker)
 
     text = soup.get_text(separator="\n", strip=True)
+    
+    # 마커를 실제 테이블 텍스트로 치환
+    for marker, tbl_txt in table_texts.items():
+        text = text.replace(marker, tbl_txt)
+
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -90,7 +100,9 @@ def get_latest_posts(count=10):
     for item in items:
         raw_content = item.get("nt_content", "")
         nt_idx = item.get("nt_idx", "")
-        detail_url = f"{BASE_URL}/post/recruit/detail?i_sNtCode=BHCT&nt_idx={requests.utils.quote(nt_idx)}"
+        import urllib.parse
+        encoded_idx = urllib.parse.quote(nt_idx, safe="")
+        detail_url = f"{BASE_URL}/post/recruit/detail?i_sNtCode=BHCT&nt_idx={encoded_idx}"
         post = {
             "id": item.get("nt_idx2"),
             "title": parse_title(item.get("nt_title", "")),

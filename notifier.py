@@ -8,8 +8,10 @@ def send_kakao_message(post, access_token):
     """카카오톡 '나에게 보내기'로 feed 템플릿 메시지를 전송한다."""
     detail_url = post.get("detail_url", "https://www.elyes.co.kr/post/recruit")
 
-    description = post["content_text"]
-    if len(description) > 200:
+    description = post.get("content_text", "").strip()
+    if not description:
+        description = "공고 본문이 이미지로만 구성되어 있습니다. 상세보기를 눌러 원문을 확인해주세요."
+    elif len(description) > 200:
         description = description[:200] + "..."
 
     content = {
