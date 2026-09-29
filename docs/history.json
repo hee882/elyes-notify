@@ -2486,7 +2486,7 @@
   ],
   "stats": {
     "total_sent": 276,
-    "last_run": "2026-09-28 21:40",
+    "last_run": "2026-09-29 12:45",
     "token_status": "active",
     "token_refreshed_at": "2026-03-11 12:50",
     "refresh_token_renewed": false
