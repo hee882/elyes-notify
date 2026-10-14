@@ -52,9 +52,19 @@
       "end": "2026-10-16",
       "closed": false,
       "reminded": []
+    },
+    {
+      "id": "23550",
+      "title": "[사송 롯데캐슬] 재임대 모집공고(접수기간: 26.10.14~26.10.18)",
+      "post_date": "2026.10.14",
+      "detail_url": "https://www.elyes.co.kr/post/recruit/detail?i_sNtCode=BHCT&nt_idx=dFaxK4PdLBf%2BPvNJHlTsuQ%3D%3D",
+      "start": "2026-10-14",
+      "end": "2026-10-18",
+      "closed": false,
+      "reminded": []
     }
   ],
   "meta": {
-    "updated_at": "2026-10-08 04:03"
+    "updated_at": "2026-10-14 03:09"
   }
 }
