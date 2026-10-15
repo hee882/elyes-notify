@@ -51,7 +51,9 @@
       "start": "2026-10-16",
       "end": "2026-10-16",
       "closed": false,
-      "reminded": []
+      "reminded": [
+        "d1"
+      ]
     },
     {
       "id": "23550",
