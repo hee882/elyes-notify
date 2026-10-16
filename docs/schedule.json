@@ -52,7 +52,9 @@
       "end": "2026-10-16",
       "closed": false,
       "reminded": [
-        "d1"
+        "d1",
+        "open",
+        "d0"
       ]
     },
     {

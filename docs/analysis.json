@@ -1,17 +1,17 @@
 {
   "meta": {
-    "version": 11,
-    "analyzed_at": "2026-09-11 19:55",
-    "last_checked": "2026-09-11 19:55",
+    "version": 12,
+    "analyzed_at": "2026-10-16 16:48",
+    "last_checked": "2026-10-16 16:48",
     "mode": "full-rescan",
-    "total_posts": 231,
-    "new_posts": 5,
+    "total_posts": 238,
+    "new_posts": 3,
     "matched_results": 4,
     "new_matches": 1,
     "complexes": 3,
     "date_range": {
       "from": "2021.02.22",
-      "to": "2026.09.11"
+      "to": "2026.10.16"
     },
     "known_post_ids": [
       "11062",
@@ -487,6 +487,9 @@
       "23553",
       "23555",
       "23558",
+      "23560",
+      "23562",
+      "23564",
       "3672",
       "4498",
       "4548",
@@ -635,6 +638,15 @@
         "new_match_summaries": [
           "독산역 롯데캐슬 (2026.09.11)"
         ]
+      },
+      {
+        "version": 12,
+        "date": "2026-10-16 16:48",
+        "new_posts": 3,
+        "new_matches": 1,
+        "new_match_summaries": [
+          "독산역 롯데캐슬 (2026.10.16)"
+        ]
       }
     ]
   },
@@ -660,13 +672,13 @@
     {
       "type": "opportunity",
       "title": "독산역 롯데캐슬 추천 타입",
-      "message": "59B타입 — 경쟁률 166.4:1 (최근 231.7:1)",
-      "detail": "같은 단지 내 59A타입(205.5:1) 대비 39.1 낮음"
+      "message": "59B타입 — 경쟁률 169.3:1 (최근 224.5:1)",
+      "detail": "같은 단지 내 59A타입(211.9:1) 대비 42.6 낮음"
     },
     {
       "type": "warning",
       "title": "독산역 롯데캐슬 59B 경쟁률 상승",
-      "message": "최근 231.7:1 (평균 157.9:1)",
+      "message": "최근 224.5:1 (평균 163.2:1)",
       "detail": "최근 모집에서 경쟁이 증가하고 있습니다."
     }
   ],
@@ -904,85 +916,85 @@
       {
         "complex": "독산역 롯데캐슬",
         "type": "59C",
-        "predicted_rate": 209.0,
+        "predicted_rate": 188.8,
         "rate_range": [
-          102.8,
-          315.1
+          88.0,
+          289.5
         ],
-        "rate_std": 37.9,
+        "rate_std": 37.4,
         "confidence": "high",
-        "n_data": 7,
-        "trend": "up",
-        "win_prob": 0.91,
-        "win_prob_direct": 0.48,
-        "win_prob_reserve": 0.43,
+        "n_data": 8,
+        "trend": "stable",
+        "win_prob": 1.01,
+        "win_prob_direct": 0.53,
+        "win_prob_reserve": 0.48,
         "win_prob_range": [
-          0.6,
-          1.85
+          0.66,
+          2.16
         ],
         "demand_context": {
-          "demand_base": 531.4,
-          "demand_factor": 0.358,
+          "demand_base": 591.5,
+          "demand_factor": 0.319,
           "solo_avg_rate": null,
-          "multi_avg_rate": 175.7,
+          "multi_avg_rate": 171.4,
           "solo_count": 0,
-          "multi_count": 7
+          "multi_count": 8
         }
       },
       {
         "complex": "독산역 롯데캐슬",
         "type": "59B",
-        "predicted_rate": 214.3,
+        "predicted_rate": 222.9,
         "rate_range": [
-          63.0,
-          365.6
+          85.8,
+          360.0
         ],
-        "rate_std": 57.9,
+        "rate_std": 53.8,
         "confidence": "high",
-        "n_data": 9,
+        "n_data": 10,
         "trend": "up",
-        "win_prob": 0.89,
-        "win_prob_direct": 0.47,
-        "win_prob_reserve": 0.42,
+        "win_prob": 0.85,
+        "win_prob_direct": 0.45,
+        "win_prob_reserve": 0.4,
         "win_prob_range": [
-          0.52,
-          3.02
+          0.53,
+          2.21
         ],
         "demand_context": {
-          "demand_base": 589.4,
-          "demand_factor": 0.33,
+          "demand_base": 556.2,
+          "demand_factor": 0.364,
           "solo_avg_rate": null,
-          "multi_avg_rate": 157.9,
+          "multi_avg_rate": 163.2,
           "solo_count": 0,
-          "multi_count": 9
+          "multi_count": 10
         }
       },
       {
         "complex": "독산역 롯데캐슬",
         "type": "59A",
-        "predicted_rate": 252.5,
+        "predicted_rate": 260.2,
         "rate_range": [
-          103.5,
-          401.4
+          118.0,
+          402.4
         ],
-        "rate_std": 57.0,
+        "rate_std": 55.8,
         "confidence": "high",
-        "n_data": 9,
+        "n_data": 10,
         "trend": "up",
-        "win_prob": 0.75,
-        "win_prob_direct": 0.4,
-        "win_prob_reserve": 0.36,
+        "win_prob": 0.73,
+        "win_prob_direct": 0.38,
+        "win_prob_reserve": 0.35,
         "win_prob_range": [
           0.47,
-          1.84
+          1.61
         ],
         "demand_context": {
-          "demand_base": 639.0,
-          "demand_factor": 0.359,
+          "demand_base": 673.4,
+          "demand_factor": 0.351,
           "solo_avg_rate": null,
-          "multi_avg_rate": 195.6,
+          "multi_avg_rate": 202.1,
           "solo_count": 0,
-          "multi_count": 9
+          "multi_count": 10
         }
       }
     ],
@@ -1120,20 +1132,20 @@
       {
         "round": 9,
         "label": "독산역 롯데캐슬 59C",
-        "this_prob": 0.91,
-        "cumulative_prob": 27.65
+        "this_prob": 1.01,
+        "cumulative_prob": 27.72
       },
       {
         "round": 10,
         "label": "독산역 롯데캐슬 59B",
-        "this_prob": 0.89,
-        "cumulative_prob": 28.29
+        "this_prob": 0.85,
+        "cumulative_prob": 28.34
       },
       {
         "round": 11,
         "label": "독산역 롯데캐슬 59A",
-        "this_prob": 0.75,
-        "cumulative_prob": 28.83
+        "this_prob": 0.73,
+        "cumulative_prob": 28.86
       }
     ],
     "monte_carlo": {
@@ -1164,11 +1176,11 @@
       "mc_median_rounds": 8
     },
     "backtest": {
-      "mape": 31.0,
-      "mae": 31.6,
-      "ci_coverage": 81.5,
-      "pick_accuracy": 75.0,
-      "total_predictions": 54,
+      "mape": 30.3,
+      "mae": 31.4,
+      "ci_coverage": 82.5,
+      "pick_accuracy": 76.2,
+      "total_predictions": 57,
       "tuned_alpha": 0.15,
       "tuned_reserve_conversion": 0.3
     }
@@ -1812,20 +1824,20 @@
       }
     },
     "독산역 롯데캐슬": {
-      "total_rounds": 9,
+      "total_rounds": 10,
       "recommended_type": "59B",
       "types": {
         "59A": {
-          "appearances": 9,
-          "avg_rate": 195.6,
-          "weighted_rate": 205.5,
-          "recent_avg": 242.3,
+          "appearances": 10,
+          "avg_rate": 202.1,
+          "weighted_rate": 211.9,
+          "recent_avg": 252.7,
           "trend": "up",
           "demand_context": {
             "solo_avg_rate": null,
-            "multi_avg_rate": 195.6,
+            "multi_avg_rate": 202.1,
             "solo_count": 0,
-            "multi_count": 9
+            "multi_count": 10
           },
           "history": [
             {
@@ -1942,20 +1954,33 @@
               "total_types_in_round": 3,
               "total_units_in_round": 3,
               "total_applicants_in_round": 623
+            },
+            {
+              "date": "2026.10.16",
+              "rate": 261.0,
+              "units": 1,
+              "applicants": 261,
+              "co_types": [
+                "59B",
+                "59C"
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 823
             }
           ]
         },
         "59B": {
-          "appearances": 9,
-          "avg_rate": 157.9,
-          "weighted_rate": 166.4,
-          "recent_avg": 231.7,
+          "appearances": 10,
+          "avg_rate": 163.2,
+          "weighted_rate": 169.3,
+          "recent_avg": 224.5,
           "trend": "up",
           "demand_context": {
             "solo_avg_rate": null,
-            "multi_avg_rate": 157.9,
+            "multi_avg_rate": 163.2,
             "solo_count": 0,
-            "multi_count": 9
+            "multi_count": 10
           },
           "history": [
             {
@@ -2072,20 +2097,33 @@
               "total_types_in_round": 3,
               "total_units_in_round": 3,
               "total_applicants_in_round": 623
+            },
+            {
+              "date": "2026.10.16",
+              "rate": 210.5,
+              "units": 2,
+              "applicants": 421,
+              "co_types": [
+                "59A",
+                "59C"
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 823
             }
           ]
         },
         "59C": {
-          "appearances": 7,
-          "avg_rate": 175.7,
-          "weighted_rate": 177.5,
-          "recent_avg": 207.5,
-          "trend": "up",
+          "appearances": 8,
+          "avg_rate": 171.4,
+          "weighted_rate": 171.8,
+          "recent_avg": 174.2,
+          "trend": "stable",
           "demand_context": {
             "solo_avg_rate": null,
-            "multi_avg_rate": 175.7,
+            "multi_avg_rate": 171.4,
             "solo_count": 0,
-            "multi_count": 7
+            "multi_count": 8
           },
           "history": [
             {
@@ -2178,6 +2216,19 @@
               "total_types_in_round": 3,
               "total_units_in_round": 3,
               "total_applicants_in_round": 623
+            },
+            {
+              "date": "2026.10.16",
+              "rate": 141.0,
+              "units": 1,
+              "applicants": 141,
+              "co_types": [
+                "59A",
+                "59B"
+              ],
+              "total_types_in_round": 3,
+              "total_units_in_round": 4,
+              "total_applicants_in_round": 823
             }
           ]
         }
@@ -2221,35 +2272,35 @@
     },
     {
       "complex": "독산역 롯데캐슬",
-      "status_id": "23445",
-      "status_date": "2026.09.11",
-      "status_title": "[독산역 롯데캐슬]2026.09.04 재임대 모집공고 접수 현황",
-      "recruit_date": "2026.09.04",
-      "recruit_title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 9.11(금) 10시~15시)",
+      "status_id": "23562",
+      "status_date": "2026.10.16",
+      "status_title": "[독산역 롯데캐슬]2026.10.08 재임대 모집공고 접수 현황",
+      "recruit_date": "2026.10.08",
+      "recruit_title": "[독산역 롯데캐슬] 59타입 재임대 모집공고(접수일시: '26. 10.16(금) 10시~15시)",
       "competition": [
         {
           "type": "59A",
           "units": 1,
-          "applicants": 206,
+          "applicants": 261,
           "winners": 0,
           "reserves": 0,
-          "rate": 206.0
+          "rate": 261.0
         },
         {
           "type": "59B",
-          "units": 1,
-          "applicants": 243,
+          "units": 2,
+          "applicants": 421,
           "winners": 0,
           "reserves": 0,
-          "rate": 243.0
+          "rate": 210.5
         },
         {
           "type": "59C",
           "units": 1,
-          "applicants": 174,
+          "applicants": 141,
           "winners": 0,
           "reserves": 0,
-          "rate": 174.0
+          "rate": 141.0
         }
       ]
     },
